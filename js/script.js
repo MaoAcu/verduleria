@@ -276,7 +276,7 @@ function sendOrder() {
     cart.forEach(item => {
         const itemTotal = item.price * item.quantity;
         total += itemTotal;
-        message += `• ${item.name} (${item.weight}) x${item.quantity} - $${itemTotal.toLocaleString()}\n`;
+        message += `• ${item.name} (${item.weight}) x${item.quantity} - ₡${itemTotal.toLocaleString()}\n`;
     });
     
     message += `\n*Total: ₡${total.toLocaleString()}*`;
