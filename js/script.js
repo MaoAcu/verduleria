@@ -1,7 +1,7 @@
-// Datos compartidos (desde localStorage)
+ 
 let products = JSON.parse(localStorage.getItem('mercadoFrescoProducts')) || [];
 
-// Carrito de compras
+ 
 let cart = JSON.parse(localStorage.getItem('mercadoFrescoCart')) || [];
 
 let currentView = 'inicio';
@@ -282,7 +282,7 @@ function sendOrder() {
     message += `\n*Total: ₡${total.toLocaleString()}*`;
     message += "\n\n¡Gracias por tu compra! Te contactaremos pronto.";
     
-    const phoneNumber = "+50687922758";
+    const phoneNumber = "+50670134571";
     const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     
     window.open(url, '_blank');
