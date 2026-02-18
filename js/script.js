@@ -12,12 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Si no hay productos en localStorage, cargar los predeterminados
         products = [
             { id: 1, name: 'Fresas Frescas', description: 'Fresas rojas y jugosas, perfectas para postre', category: 'frutas', weight: '500G', price: 4500, stock: 15, featured: true },
-            { id: 2, name: 'Mango Tommy', description: 'Mangos dulces y carnosos de la mejor cosecha', category: 'frutas', weight: '1KG', price: 3200, stock: 10, featured: true },
-            { id: 3, name: 'Tomates Chonto', description: 'Tomates rojos y firmes, ideales para ensaladas', category: 'verduras', weight: '1KG', price: 2200, stock: 20, featured: true },
+            { id: 2, name: 'Mango', description: 'Mangos dulces y carnosos de la mejor cosecha', category: 'frutas', weight: '1KG', price: 3200, stock: 10, featured: true },
+            { id: 3, name: 'Tomates', description: 'Tomates rojos y firmes, ideales para ensaladas', category: 'verduras', weight: '1KG', price: 2200, stock: 20, featured: true },
             { id: 4, name: 'Brócoli Orgánico', description: 'Brócoli verde y fresco, rico en nutrientes', category: 'verduras', weight: '500G', price: 3800, stock: 8, featured: true },
             { id: 5, name: 'Aguacate Hass', description: 'Aguacates cremosos y en su punto perfecto', category: 'frutas', weight: '3 UNIDADES', price: 5200, stock: 12, featured: true },
-            { id: 6, name: 'Leche Entera Fresca', description: 'Leche fresca pasteurizada del día', category: 'lacteos', weight: '1 LITRO', price: 4200, stock: 5, featured: true },
-            { id: 7, name: 'Queso Campesino', description: 'Queso artesanal fresco, suave y cremoso', category: 'lacteos', weight: '500G', price: 8500, stock: 7, featured: true },
+            { id: 6, name: 'Leche de Vaca', description: 'Leche fresca pasteurizada del día', category: 'lacteos', weight: '1 LITRO', price: 4200, stock: 5, featured: true },
+            { id: 7, name: 'Queso Maduro', description: 'Queso artesanal fresco, suave y cremoso', category: 'lacteos', weight: '500G', price: 8500, stock: 7, featured: true },
             { id: 8, name: 'Manzana Roja', description: 'Manzanas dulces y crujientes', category: 'frutas', weight: '1KG', price: 3800, stock: 0, featured: false },
             { id: 9, name: 'Zanahoria', description: 'Zanahorias frescas y tiernas', category: 'verduras', weight: '1KG', price: 1800, stock: 25, featured: false },
             { id: 10, name: 'Yogurt Natural', description: 'Yogurt cremoso sin azúcar', category: 'lacteos', weight: '1L', price: 5200, stock: 0, featured: false }
@@ -115,7 +115,7 @@ function updateClientProducts() {
                 ${product.stock > 0 ? `📦 ${product.stock} disponibles` : '❌ Agotado'}
             </div>
             <div class="product-footer">
-                <span class="product-price">$${product.price.toLocaleString()}</span>
+                <span class="product-price">₡${product.price.toLocaleString()}</span>
                 <button class="add-btn" ${product.stock === 0 ? 'disabled' : ''} 
                         onclick="addToCart(${product.id}, this)">+</button>
             </div>
@@ -246,7 +246,7 @@ function updateCartModal() {
                     <h4>${item.name}</h4>
                     <p>${item.weight} x${item.quantity}</p>
                 </div>
-                <div class="cart-item-price">$${itemTotal.toLocaleString()}</div>
+                <div class="cart-item-price">₡${itemTotal.toLocaleString()}</div>
                 <div class="cart-item-remove" onclick="removeFromCart(${item.id})">
                     <i class="fas fa-trash"></i>
                 </div>
@@ -254,7 +254,7 @@ function updateCartModal() {
         `;
     }).join('');
     
-    cartTotal.querySelector('span:last-child').textContent = `$${total.toLocaleString()}`;
+    cartTotal.querySelector('span:last-child').textContent = `₡${total.toLocaleString()}`;
 }
 
 function removeFromCart(productId) {
@@ -279,10 +279,10 @@ function sendOrder() {
         message += `• ${item.name} (${item.weight}) x${item.quantity} - $${itemTotal.toLocaleString()}\n`;
     });
     
-    message += `\n*Total: $${total.toLocaleString()}*`;
+    message += `\n*Total: ₡${total.toLocaleString()}*`;
     message += "\n\n¡Gracias por tu compra! Te contactaremos pronto.";
     
-    const phoneNumber = "573001234567";
+    const phoneNumber = "+50687922758";
     const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     
     window.open(url, '_blank');
