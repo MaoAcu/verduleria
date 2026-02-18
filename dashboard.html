@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrativo - Mercado Fresco</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-mode">
+    <!-- Header para admin -->
+    <header class="admin-header">
+        <div class="logo" onclick="window.location.href='index.html'">
+            <h1>🌿 Mercado Fresco</h1>
+        </div>
+      
+    </header>
+
+    <!-- Admin Dashboard -->
+    <section class="admin-dashboard">
+        <div class="admin-header">
+            <h2><i class="fas fa-chart-line"></i> Panel de Administración</h2>
+            <button class="btn-admin" onclick="openAddProductModal()">
+                <i class="fas fa-plus"></i> Agregar Producto
+            </button>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="admin-stats" id="admin-stats">
+            <!-- Se llenará dinámicamente -->
+        </div>
+
+        <!-- Tabla de productos -->
+        <div class="admin-products-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Destacado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-products-table-body">
+                    <!-- Se llenará dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Modal Producto -->
+    <div class="modal" id="product-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 id="modal-title">Agregar Producto</h2>
+            <form id="product-form" onsubmit="saveProduct(event)">
+                <input type="hidden" id="product-id">
+                
+                <div class="form-group">
+                    <label for="product-name">Nombre del producto</label>
+                    <input type="text" id="product-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-description">Descripción</label>
+                    <textarea id="product-description" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-category">Categoría</label>
+                    <select id="product-category" required>
+                        <option value="frutas">Frutas</option>
+                        <option value="verduras">Verduras</option>
+                        <option value="lacteos">Lácteos</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-weight">Peso/Unidad</label>
+                    <input type="text" id="product-weight" placeholder="Ej: 500G, 1KG, 3 UNIDADES" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-price">Precio</label>
+                    <input type="number" id="product-price" min="0" step="100" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-stock">Stock</label>
+                    <input type="number" id="product-stock" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="product-featured"> Producto Destacado
+                    </label>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Eliminar -->
+    <div class="modal" id="delete-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeDeleteModal()">&times;</span>
+            <h2>Confirmar Eliminación</h2>
+            <p>¿Estás seguro de que deseas eliminar este producto?</p>
+            <div class="modal-actions">
+                <button class="btn btn-danger" onclick="confirmDelete()">Eliminar</button>
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>

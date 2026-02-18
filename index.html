@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercado Fresco - E-commerce</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="client-mode">
+    <!-- Header -->
+    <header>
+        <div class="logo" onclick="showClientView()">
+            <h1>🌿 Mercado Fresco</h1>
+        </div>
+
+        <!-- Carrito MÓVIL - visible solo en móviles, fuera del nav -->
+        <div class="cart-icon mobile-cart" onclick="openCartModal()">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count" id="cartCountMobile">0</span>
+        </div>
+
+        <div class="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <div class="nav-container" id="navContainer">
+            <nav>
+                <a onclick="navigateTo('inicio')"><i class="fas fa-home"></i> Inicio</a>
+                <a onclick="navigateTo('frutas')"><i class="fas fa-apple-alt"></i> Frutas</a>
+                <a onclick="navigateTo('verduras')"><i class="fas fa-carrot"></i> Verduras</a>
+                <a onclick="navigateTo('lacteos')"><i class="fas fa-cheese"></i> Lacteos</a>
+                <a onclick="navigateTo('tienda')"><i class="fas fa-store"></i> Tienda</a>
+                <a onclick="navigateTo('about')"><i class="fas fa-info-circle"></i> Acerca de</a>
+                 
+                <!-- Carrito DESKTOP - visible solo en desktop, dentro del nav -->
+                <div class="cart-icon desktop-cart" onclick="openCartModal()">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCountDesktop">0</span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero client-only" id="hero">
+        <h2>DEL CAMPO A TU MESA</h2>
+        <h3>Productos frescos,<br>sabor auténtico</h3>
+        <p>Frutas, verduras y lácteos seleccionados con cuidado. Directamente del productor a tu hogar, con la frescura que mereces.</p>
+        <div class="hero-buttons">
+            <button class="btn btn-primary" onclick="navigateTo('tienda')"><i class="fas fa-store"></i> Explorar Tienda</button>
+            <button class="btn btn-secondary" onclick="navigateTo('frutas')"><i class="fas fa-apple-alt"></i> Ver Frutas</button>
+        </div>
+    </section>
+
+    <!-- Beneficios -->
+    <section class="benefits client-only">
+        <div class="benefit">
+            <i class="fas fa-truck"></i>
+            <h4>Entregas Rápidas</h4>
+            <p>Recibe tus productos frescos directamente en tu puerta</p>
+        </div>
+        <div class="benefit">
+            <i class="fas fa-medal"></i>
+            <h4>Calidad Garantizada</h4>
+            <p>Productos seleccionados del campo con los más altos estándares</p>
+        </div>
+        <div class="benefit">
+            <i class="fas fa-leaf"></i>
+            <h4>Siempre Fresco</h4>
+            <p>Cosechado y empacado el mismo día de tu pedido</p>
+        </div>
+    </section>
+
+    <!-- Categorías -->
+    <section class="categories client-only">
+        <h2>
+            <span>Nuestras Categorías</span>
+            Explora lo mejor de cada sección
+        </h2>
+        <div class="category-grid">
+            <div class="category-card" onclick="navigateTo('frutas')">
+                <i class="fas fa-apple-alt"></i>
+                <h3>Frutas</h3>
+                <p>Frutas frescas de temporada, directas del campo</p>
+            </div>
+            <div class="category-card" onclick="navigateTo('verduras')">
+                <i class="fas fa-carrot"></i>
+                <h3>Verduras</h3>
+                <p>Verduras orgánicas cultivadas con amor</p>
+            </div>
+            <div class="category-card" onclick="navigateTo('lacteos')">
+                <i class="fas fa-cheese"></i>
+                <h3>Lácteos</h3>
+                <p>Productos lácteos frescos y artesanales</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Productos -->
+    <section class="featured client-only" id="client-products">
+        <div class="featured-header">
+            <p>Productos Destacados</p>
+            <h2>Lo más fresco y popular esta semana</h2>
+        </div>
+        <div class="product-grid" id="client-product-grid">
+            <!-- Productos se cargarán dinámicamente -->
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section client-only" id="about-section" style="display: none;">
+        <div class="about-content">
+            <div class="about-text">
+                <h2>
+                    <span>Acerca de Nosotros</span>
+                    Más de 10 años llevando frescura a tu hogar
+                </h2>
+                <p>En Mercado Fresco nos apasiona conectar a los productores locales con las familias colombianas. Trabajamos directamente con agricultores de diferentes regiones del país para traerte los productos más frescos y de la más alta calidad.</p>
+                <p>Seleccionamos cuidadosamente cada fruta, verdura y lácteo para asegurar que llegue a tu mesa en su punto óptimo de frescura y sabor. Nuestro compromiso es con la calidad, la sostenibilidad y el apoyo al campo colombiano.</p>
+                
+                <div class="about-features">
+                    <div class="about-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Productos 100% frescos</span>
+                    </div>
+                    <div class="about-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Apoyo a agricultores locales</span>
+                    </div>
+                    <div class="about-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Empaque sostenible</span>
+                    </div>
+                    <div class="about-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Entrega el mismo día</span>
+                    </div>
+                </div>
+            </div>
+            <div class="about-image">
+                <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Campo colombiano">
+            </div>
+        </div>
+    </section>
+
+   
+
+    <!-- Modal Carrito -->
+    <div class="modal cart-modal" id="cart-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeCartModal()">&times;</span>
+            <h2><i class="fas fa-shopping-cart"></i> Tu Carrito</h2>
+            
+            <div class="cart-items" id="cart-items">
+                <!-- Items del carrito -->
+            </div>
+
+            <div class="cart-total" id="cart-total">
+                <span>Total:</span>
+                <span>$0</span>
+            </div>
+
+            <button class="whatsapp-btn" onclick="sendOrder()">
+                <i class="fab fa-whatsapp"></i> Enviar pedido por WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fas fa-leaf"></i> Mercado Fresco</h3>
+                <p>Productos frescos del campo directamente a tu mesa. Calidad, frescura y confianza en cada pedido.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3>Categorías</h3>
+                <ul>
+                    <li><a onclick="navigateTo('frutas')"><i class="fas fa-apple-alt"></i> Frutas</a></li>
+                    <li><a onclick="navigateTo('verduras')"><i class="fas fa-carrot"></i> Verduras</a></li>
+                    <li><a onclick="navigateTo('lacteos')"><i class="fas fa-cheese"></i> Lácteos</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Enlaces Rápidos</h3>
+                <ul>
+                    <li><a onclick="navigateTo('inicio')"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a onclick="navigateTo('tienda')"><i class="fas fa-store"></i> Tienda</a></li>
+                    <li><a onclick="navigateTo('about')"><i class="fas fa-info-circle"></i> Acerca de</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section contact-info">
+                <h3>Contacto</h3>
+                <p><i class="fas fa-envelope"></i> info@mercadofresco.com</p>
+                <p><i class="fas fa-phone-alt"></i> +57 300 123 4567</p>
+                <p><i class="fas fa-clock"></i> Lunes a Sábado: 6am – 6pm</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Mercado Fresco. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
