@@ -6,3 +6,4 @@ cryptography
 sqlalchemy
 flask-sqlalchemy
 bcrypt
+PIL
