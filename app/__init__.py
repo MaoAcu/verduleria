@@ -7,10 +7,10 @@ from dotenv import load_dotenv
 
 from app.extensions import db
 from app.Service import email_service 
-from .Controllers.routes import routes_bp
-from .Controllers.AunthController import auth_bp
-from .Controllers.productosController import productos_bp
-from .Controllers.credentialController import credential_bp
+from app.Controllers.routes import routes_bp
+from app.Controllers.AunthController import auth_bp
+from app.Controllers.productosController import productos_bp
+from app.Controllers.credentialController import credential_bp
 from app.models import Usuario, Login, Local
  
 load_dotenv() 
