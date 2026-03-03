@@ -1,3 +1,5 @@
 flask==3.1.2
 dotenv 
 gunicorn
+pymysql
+cryptography
