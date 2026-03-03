@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+
+    <meta name="theme-color" content="#2c3e50">
+    <meta property="og:title" content="Del Campo a su Casa">
+    <meta property="og:description" content="Lo mas fresco del mercado">
+    <meta property="og:image" content="	{{ url_for('static', filename='images/LogoDCC.webp') }}">
+    <meta property="og:type" content="website">
+    <title>Del Campo a su Casa - Mercado Fresco</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <div class="logo-area" onclick="showClientView()">
+            <img src="{{ url_for('static', filename='images/LogoDCC.webp') }}" alt="Del Campo a su Casa" style="width: 48px; height: 48px; object-fit: cover; border-radius: 14px; box-shadow: 0 6px 12px rgba(45,106,79,0.25);">
+        <div class="logo-text">
+            Del Campo a su Casa
+            <span>Mercado Fresco</span>
+        </div>
+    </div>
+        
+        <!-- Botón hamburguesa -->
+        <div class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu(event)">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        
+        <div class="nav-container" id="navContainer">
+            <nav>
+                <a onclick="navigateTo('inicio'); closeMobileMenu()"><i class="fas fa-home"></i> Inicio</a>
+                <a onclick="navigateTo('frutas'); closeMobileMenu()"><i class="fas fa-apple-alt"></i> Frutas</a>
+                <a onclick="navigateTo('verduras'); closeMobileMenu()"><i class="fas fa-carrot"></i> Verduras</a>
+                <a onclick="navigateTo('lacteos'); closeMobileMenu()"><i class="fas fa-cheese"></i> Lácteos</a>
+                <a onclick="navigateTo('about'); closeMobileMenu()"><i class="fas fa-info-circle"></i> Nosotros</a>
+            </nav>
+            <div class="cart-icon desktop-only" onclick="openCartModal()">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count" id="cartCount">0</span>
+            </div>
+        </div>
+        
+        <!-- Carrito móvil -->
+        <div class="cart-icon mobile-only" onclick="openCartModal()" style="display: none;">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count" id="cartCountMobile">0</span>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <h2>DEL CAMPO A TU MESA</h2>
+        <h3>Productos frescos,<br>sabor auténtico</h3>
+        <p>Frutas, verduras y lácteos seleccionados con cuidado</p>
+        <div class="hero-buttons">
+            <button class="btn" onclick="navigateTo('tienda')">Explorar Tienda</button>
+        </div>
+    </section>
+
+    <!-- Beneficios -->
+    <section class="benefits">
+        <div class="benefit">
+            <i class="fas fa-truck"></i>
+            <h4>Entregas Rápidas</h4>
+            <p>Recibe tus productos frescos en 24h</p>
+        </div>
+        <div class="benefit">
+            <i class="fas fa-medal"></i>
+            <h4>Calidad Garantizada</h4>
+            <p>Seleccionados del campo</p>
+        </div>
+        <div class="benefit">
+            <i class="fas fa-leaf"></i>
+            <h4>Siempre Fresco</h4>
+            <p>Cosechado el mismo día</p>
+        </div>
+    </section>
+
+    <!-- Filtros -->
+    <section class="filters-section">
+        <div class="filters-container">
+            <div class="category-filters">
+                <span class="filter-chip active" onclick="filterByCategory('all', this)"><i class="fas fa-th-large"></i> Todos</span>
+                <span class="filter-chip" onclick="filterByCategory('frutas', this)"><i class="fas fa-apple-alt"></i> Frutas</span>
+                <span class="filter-chip" onclick="filterByCategory('verduras', this)"><i class="fas fa-carrot"></i> Verduras</span>
+                <span class="filter-chip" onclick="filterByCategory('lacteos', this)"><i class="fas fa-cheese"></i> Lácteos</span>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Buscar productos...">
+                <button onclick="filterProducts()"><i class="fas fa-search"></i> Buscar</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Productos Grid -->
+    <section class="featured">
+        <div class="product-grid" id="productGrid"></div>
+    </section>
+
+    <!-- Product Detail Modal -->
+    <div class="product-detail-view" id="productDetail">
+        <div class="detail-card">
+            <div class="detail-header">
+                <button class="back-btn" onclick="closeDetail()">←</button>
+                <h3 id="detailName">Producto</h3>
+            </div>
+            <img class="detail-img" id="detailImg" src="">
+            <div class="detail-body">
+                <div id="detailCategory" class="product-category"></div>
+                <div class="detail-price" id="detailPrice"></div>
+                <div id="detailWeight" class="product-weight"></div>
+                <p id="detailDesc" style="margin: 0.5rem 0; font-size:0.9rem;"></p>
+                
+                <div class="qty-selector">
+                    <button class="qty-btn" onclick="changeQty(-1)">−</button>
+                    <span class="qty-value" id="detailQty">1</span>
+                    <button class="qty-btn" onclick="changeQty(1)">+</button>
+                </div>
+                
+                <textarea id="detailComment" placeholder="💬 Instrucciones especiales (opcional)" rows="2"></textarea>
+                
+                <button class="detail-add-btn" onclick="addToCartFromDetail()">
+                    <i class="fas fa-cart-plus"></i> Agregar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-panel">
+            <div class="cart-header">
+                <h2><i class="fas fa-shopping-cart"></i> Tu carrito</h2>
+                <button class="close-cart" onclick="closeCartModal()">×</button>
+            </div>
+            
+            <div class="cart-items-list" id="cartItemsList"></div>
+            
+            <div class="carousel-section">
+                <div class="carousel-title">
+                    <h4>✨ Complementa</h4>
+                    <div>
+                        <button class="carousel-btn" onclick="scrollCarousel(-1)">←</button>
+                        <button class="carousel-btn" onclick="scrollCarousel(1)">→</button>
+                    </div>
+                </div>
+                <div class="carousel-track" id="complementCarousel"></div>
+            </div>
+            
+            
+            
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotal">₡0</span>
+            </div>
+            
+            <button class="whatsapp-btn" onclick="sendOrder()">
+                <i class="fab fa-whatsapp"></i> Enviar por WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fas fa-leaf"></i> Del Campo a su Casa</h3>
+                <p>Productos frescos del campo directamente a tu mesa.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Categorías</h3>
+                <p><a onclick="navigateTo('frutas')">Frutas</a></p>
+                <p><a onclick="navigateTo('verduras')">Verduras</a></p>
+                <p><a onclick="navigateTo('lacteos')">Lácteos</a></p>
+            </div>
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <p><i class="fas fa-envelope"></i> info@delcampo.com</p>
+                <p><i class="fas fa-phone-alt"></i> +506 300 123 4567</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; <span id="currentYear"></span> Del Campo a su Casa - Mercado Fresco</p>
+        </div>
+    </footer>
+    <script>
+        const IMG_URL="{{ url_for('static', filename='images/') }}"
+    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
