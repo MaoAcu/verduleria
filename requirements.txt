@@ -3,3 +3,4 @@ dotenv
 gunicorn
 pymysql
 cryptography
+sqlalchemy
