@@ -5,3 +5,4 @@ pymysql
 cryptography
 sqlalchemy
 flask-sqlalchemy
+bcryp
