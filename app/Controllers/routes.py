@@ -10,7 +10,7 @@ routes_bp = Blueprint("routes", __name__)
 def index():
     return render_template('index.html')
 
-@routes_bp.route("/Menu", endpoint="Menu")
+@routes_bp.route("/tienda", endpoint="tienda")
 def Menu():
     return render_template('index.html')
 
@@ -28,7 +28,9 @@ def DashBoard():
     return render_template('dashboard.html')
 
 
-
+@routes_bp.route("/aboutme", endpoint="about_me")
+def RestablecerContra():
+    return render_template('aboutme.html')
 
 
 @routes_bp.route("/restablecer_contra", endpoint="restablecer_contra")

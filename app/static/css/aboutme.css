@@ -1,0 +1,274 @@
+/* About Section Styles */
+.about-section {
+    padding: 4rem 5%;
+    background: linear-gradient(135deg, #f8fff8 0%, #f0f7f0 100%);
+}
+
+.about-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.about-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.about-title {
+    font-size: 2.5rem;
+    color: #1a2e1a;
+    margin-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+}
+
+.about-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #2d6a4f, #40916c);
+    border-radius: 2px;
+}
+
+.about-subtitle {
+    color: #4a6b4a;
+    font-size: 1.1rem;
+}
+
+.mission-vision-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.mission-card, .vision-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 30px;
+    box-shadow: 0 10px 30px rgba(45,106,79,0.1);
+    transition: transform 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.mission-card:hover, .vision-card:hover {
+    transform: translateY(-5px);
+}
+
+.mission-card::before, .vision-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, #2d6a4f, #40916c);
+}
+
+.mission-icon, .vision-icon {
+    width: 60px;
+    height: 60px;
+    background: #e8f3e8;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.mission-icon i, .vision-icon i {
+    font-size: 2rem;
+    color: #2d6a4f;
+}
+
+.mission-card h3, .vision-card h3 {
+    font-size: 1.8rem;
+    color: #1a2e1a;
+    margin-bottom: 1rem;
+}
+
+.mission-card p, .vision-card p {
+    color: #4a6b4a;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.section-title {
+    font-size: 2rem;
+    color: #1a2e1a;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+}
+
+.value-item {
+    background: white;
+    padding: 2rem 1.5rem;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(45,106,79,0.08);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(45,106,79,0.1);
+}
+
+.value-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(45,106,79,0.15);
+}
+
+.value-icon {
+    width: 70px;
+    height: 70px;
+    background: #e8f3e8;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.2rem;
+}
+
+.value-icon i {
+    font-size: 2rem;
+    color: #2d6a4f;
+}
+
+.value-item h4 {
+    font-size: 1.2rem;
+    color: #1a2e1a;
+    margin-bottom: 0.5rem;
+}
+
+.value-item p {
+    color: #4a6b4a;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.offer-section {
+    background: white;
+    padding: 3rem;
+    border-radius: 30px;
+    margin-bottom: 3rem;
+    box-shadow: 0 10px 30px rgba(45,106,79,0.1);
+}
+
+.offer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.offer-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8fff8;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    border: 1px solid #e0f0e0;
+}
+
+.offer-item:hover {
+    background: #2d6a4f;
+    color: white;
+    transform: translateX(5px);
+}
+
+.offer-item:hover i {
+    color: white;
+}
+
+.offer-item i {
+    font-size: 1.5rem;
+    color: #2d6a4f;
+    transition: color 0.3s ease;
+}
+
+.offer-item span {
+    font-weight: 500;
+}
+
+.about-cta {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.about-btn {
+    background: #2d6a4f;
+    color: white;
+    border: none;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    box-shadow: 0 8px 20px rgba(45,106,79,0.3);
+}
+
+.about-btn:hover {
+    background: #1e4f3a;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(45,106,79,0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .mission-vision-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .about-title {
+        font-size: 2rem;
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+    }
+    
+    .mission-card h3, .vision-card h3 {
+        font-size: 1.5rem;
+    }
+    
+    .values-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .offer-section {
+        padding: 2rem 1.5rem;
+    }
+    
+    .offer-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .values-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .about-title {
+        font-size: 1.8rem;
+    }
+    
+    .mission-card, .vision-card {
+        padding: 1.8rem;
+    }
+}

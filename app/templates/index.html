@@ -37,7 +37,7 @@
                 <a onclick="navigateTo('frutas'); closeMobileMenu()"><i class="fas fa-apple-alt"></i> Frutas</a>
                 <a onclick="navigateTo('verduras'); closeMobileMenu()"><i class="fas fa-carrot"></i> Verduras</a>
                 <a onclick="navigateTo('lacteos'); closeMobileMenu()"><i class="fas fa-cheese"></i> Lácteos</a>
-                <a onclick="navigateTo('about'); closeMobileMenu()"><i class="fas fa-info-circle"></i> Nosotros</a>
+                <a href="{{ url_for('routes.about_me') }}"><i class="fas fa-info-circle"></i> Nosotros</a>
             </nav>
             <div class="cart-icon desktop-only" onclick="openCartModal()">
                 <i class="fas fa-shopping-cart"></i>
@@ -164,7 +164,7 @@
             </button>
         </div>
     </div>
-
+  
     <!-- Footer -->
     <footer>
         <div class="footer-content">
