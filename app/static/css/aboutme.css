@@ -1,25 +1,31 @@
-/* About Section Styles */
+/* About Section Styles - 100% Responsive */
 .about-section {
-    padding: 4rem 5%;
+    padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 5%, 5%);
     background: linear-gradient(135deg, #f8fff8 0%, #f0f7f0 100%);
+    width: 100%;
+    overflow-x: hidden;
 }
 
 .about-container {
+    width: 100%;
     max-width: 1200px;
     margin: 0 auto;
+    padding: 0 clamp(0.5rem, 2vw, 1rem);
 }
 
 .about-header {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
 }
 
 .about-title {
-    font-size: 2.5rem;
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
     color: #1a2e1a;
     margin-bottom: 0.5rem;
     position: relative;
     display: inline-block;
+    padding: 0 0.5rem;
+    word-break: break-word;
 }
 
 .about-title::after {
@@ -28,7 +34,7 @@
     bottom: -10px;
     left: 50%;
     transform: translateX(-50%);
-    width: 80px;
+    width: min(80px, 30%);
     height: 3px;
     background: linear-gradient(90deg, #2d6a4f, #40916c);
     border-radius: 2px;
@@ -36,28 +42,34 @@
 
 .about-subtitle {
     color: #4a6b4a;
-    font-size: 1.1rem;
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    padding: 0 0.5rem;
+    word-break: break-word;
 }
 
+/* Misión y Visión Grid */
 .mission-vision-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-    margin-bottom: 4rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: clamp(1rem, 3vw, 2rem);
+    margin-bottom: clamp(2rem, 5vw, 4rem);
 }
 
 .mission-card, .vision-card {
     background: white;
-    padding: 2.5rem;
-    border-radius: 30px;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border-radius: clamp(20px, 3vw, 30px);
     box-shadow: 0 10px 30px rgba(45,106,79,0.1);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
     overflow: hidden;
+    width: 100%;
+    height: fit-content;
 }
 
 .mission-card:hover, .vision-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(45,106,79,0.15);
 }
 
 .mission-card::before, .vision-card::before {
@@ -71,55 +83,67 @@
 }
 
 .mission-icon, .vision-icon {
-    width: 60px;
-    height: 60px;
+    width: clamp(50px, 8vw, 60px);
+    height: clamp(50px, 8vw, 60px);
     background: #e8f3e8;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: clamp(1rem, 2.5vw, 1.5rem);
 }
 
 .mission-icon i, .vision-icon i {
-    font-size: 2rem;
+    font-size: clamp(1.5rem, 4vw, 2rem);
     color: #2d6a4f;
 }
 
 .mission-card h3, .vision-card h3 {
-    font-size: 1.8rem;
+    font-size: clamp(1.3rem, 4vw, 1.8rem);
     color: #1a2e1a;
-    margin-bottom: 1rem;
+    margin-bottom: clamp(0.8rem, 2vw, 1rem);
+    word-break: break-word;
 }
 
 .mission-card p, .vision-card p {
     color: #4a6b4a;
     line-height: 1.6;
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    word-break: break-word;
+}
+
+/* Valores Section */
+.values-section {
+    width: 100%;
+    margin-bottom: clamp(2rem, 5vw, 4rem);
 }
 
 .section-title {
-    font-size: 2rem;
+    font-size: clamp(1.5rem, 4.5vw, 2rem);
     color: #1a2e1a;
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: clamp(1.5rem, 3vw, 2rem);
+    word-break: break-word;
+    padding: 0 0.5rem;
 }
 
 .values-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 4rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    gap: clamp(0.8rem, 2vw, 1.5rem);
+    width: 100%;
 }
 
 .value-item {
     background: white;
-    padding: 2rem 1.5rem;
-    border-radius: 20px;
+    padding: clamp(1.2rem, 3vw, 2rem) clamp(1rem, 2.5vw, 1.5rem);
+    border-radius: clamp(15px, 2.5vw, 20px);
     text-align: center;
     box-shadow: 0 5px 20px rgba(45,106,79,0.08);
     transition: all 0.3s ease;
     border: 1px solid rgba(45,106,79,0.1);
+    width: 100%;
+    height: fit-content;
 }
 
 .value-item:hover {
@@ -128,56 +152,63 @@
 }
 
 .value-icon {
-    width: 70px;
-    height: 70px;
+    width: clamp(60px, 8vw, 70px);
+    height: clamp(60px, 8vw, 70px);
     background: #e8f3e8;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 1.2rem;
+    margin: 0 auto clamp(0.8rem, 2vw, 1.2rem);
 }
 
 .value-icon i {
-    font-size: 2rem;
+    font-size: clamp(1.5rem, 4vw, 2rem);
     color: #2d6a4f;
 }
 
 .value-item h4 {
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
     color: #1a2e1a;
     margin-bottom: 0.5rem;
+    word-break: break-word;
 }
 
 .value-item p {
     color: #4a6b4a;
-    font-size: 0.9rem;
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
     line-height: 1.5;
+    word-break: break-word;
 }
 
+/* Offer Section */
 .offer-section {
     background: white;
-    padding: 3rem;
-    border-radius: 30px;
-    margin-bottom: 3rem;
+    padding: clamp(1.5rem, 4vw, 3rem);
+    border-radius: clamp(20px, 3vw, 30px);
+    margin-bottom: clamp(2rem, 4vw, 3rem);
     box-shadow: 0 10px 30px rgba(45,106,79,0.1);
+    width: 100%;
 }
 
 .offer-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    gap: clamp(0.8rem, 2vw, 1.5rem);
+    width: 100%;
 }
 
 .offer-item {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 1rem;
+    gap: clamp(0.5rem, 1.5vw, 1rem);
+    padding: clamp(0.8rem, 2vw, 1rem);
     background: #f8fff8;
-    border-radius: 15px;
+    border-radius: clamp(10px, 2vw, 15px);
     transition: all 0.3s ease;
     border: 1px solid #e0f0e0;
+    width: 100%;
+    word-break: break-word;
 }
 
 .offer-item:hover {
@@ -191,34 +222,44 @@
 }
 
 .offer-item i {
-    font-size: 1.5rem;
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
     color: #2d6a4f;
     transition: color 0.3s ease;
+    flex-shrink: 0;
 }
 
 .offer-item span {
     font-weight: 500;
+    font-size: clamp(0.85rem, 2.2vw, 1rem);
 }
 
+/* CTA Button */
 .about-cta {
     text-align: center;
-    margin-top: 2rem;
+    margin-top: clamp(1.5rem, 3vw, 2rem);
+    width: 100%;
 }
 
 .about-btn {
     background: #2d6a4f;
     color: white;
     border: none;
-    padding: 1rem 2.5rem;
+    padding: clamp(0.8rem, 2.5vw, 1rem) clamp(1.5rem, 4vw, 2.5rem);
     border-radius: 50px;
-    font-size: 1.1rem;
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
-    gap: 0.8rem;
+    justify-content: center;
+    gap: clamp(0.5rem, 1.5vw, 0.8rem);
     box-shadow: 0 8px 20px rgba(45,106,79,0.3);
+    width: fit-content;
+    max-width: 100%;
+    text-decoration: none;
+    white-space: normal;
+    word-break: break-word;
 }
 
 .about-btn:hover {
@@ -227,48 +268,175 @@
     box-shadow: 0 12px 25px rgba(45,106,79,0.4);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+.about-btn i {
+    flex-shrink: 0;
+}
+
+/* Media Queries específicas para puntos de quiebre exactos */
+@media screen and (max-width: 1024px) {
+    .about-container {
+        max-width: 95%;
+    }
+    
+    .values-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media screen and (max-width: 768px) {
     .mission-vision-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .about-title {
-        font-size: 2rem;
-    }
-    
-    .section-title {
-        font-size: 1.8rem;
-    }
-    
-    .mission-card h3, .vision-card h3 {
-        font-size: 1.5rem;
+        gap: 1.5rem;
     }
     
     .values-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
     }
     
-    .offer-section {
-        padding: 2rem 1.5rem;
+    .offer-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .mission-card, .vision-card {
+        padding: 1.8rem;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .values-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
     }
     
     .offer-grid {
         grid-template-columns: 1fr;
     }
+    
+    .value-item {
+        padding: 1rem;
+    }
 }
 
-@media (max-width: 480px) {
+@media screen and (max-width: 480px) {
     .values-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .mission-card, .vision-card {
+        padding: 1.5rem;
     }
     
     .about-title {
         font-size: 1.8rem;
     }
     
+    .section-title {
+        font-size: 1.5rem;
+    }
+    
+    .offer-section {
+        padding: 1.2rem;
+    }
+    
+    .offer-item {
+        padding: 0.8rem;
+    }
+    
+    .about-btn {
+        width: 90%;
+        max-width: 300px;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .about-title {
+        font-size: 1.5rem;
+    }
+    
+    .about-subtitle {
+        font-size: 0.85rem;
+    }
+    
+    .mission-card h3, .vision-card h3 {
+        font-size: 1.2rem;
+    }
+    
+    .value-icon {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .value-icon i {
+        font-size: 1.3rem;
+    }
+    
+    .offer-item span {
+        font-size: 0.8rem;
+    }
+    
+    .about-btn {
+        font-size: 0.85rem;
+        padding: 0.7rem 1.2rem;
+    }
+}
+
+/* Ajustes para orientación horizontal en móviles */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    .about-section {
+        padding: 1.5rem 1rem;
+    }
+    
+    .mission-vision-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .values-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Soporte para pantallas muy grandes */
+@media screen and (min-width: 1600px) {
+    .about-container {
+        max-width: 1400px;
+    }
+    
+    .about-title {
+        font-size: 3rem;
+    }
+    
     .mission-card, .vision-card {
-        padding: 1.8rem;
+        padding: 3rem;
+    }
+    
+    .values-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+/* Clases de utilidad para evitar desbordamiento */
+* {
+    box-sizing: border-box;
+}
+
+img, svg {
+    max-width: 100%;
+    height: auto;
+}
+ 
+@media (hover: none) and (pointer: coarse) {
+    .value-item:hover,
+    .offer-item:hover,
+    .mission-card:hover,
+    .vision-card:hover {
+        transform: none;
+    }
+    
+    .about-btn:hover {
+        transform: none;
+    }
+    
+    .value-item:active,
+    .offer-item:active {
+        background: #e8f3e8;
     }
 }

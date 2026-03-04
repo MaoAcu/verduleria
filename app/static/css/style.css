@@ -50,7 +50,9 @@
             font-weight: 700;
             background: linear-gradient(135deg, #2d6a4f, #40916c);
             -webkit-background-clip: text;
+            background-clip: text; /* Propiedad estándar */
             -webkit-text-fill-color: transparent;
+            color: transparent; /* Fallback para navegadores que no soportan text-fill-color */
             letter-spacing: -0.5px;
             line-height: 1.2;
         }
