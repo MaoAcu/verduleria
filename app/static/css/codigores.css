@@ -1,0 +1,97 @@
+:root {
+    --verde-principal: #2e7d32;
+    --verde-claro: #4caf50;
+    --verde-oscuro: #1b5e20;
+    --verde-fondo: #e8f5e9;
+    --texto-principal: #333;
+    --texto-secundario: #666;
+    --borde: #dee2e6;
+    --sombra: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--verde-fondo);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 15px; /* Espacio para que no pegue a los bordes en móvil */
+}
+
+.login-card {
+    background: #ffffff;
+    padding: 2.5rem 1.5rem;
+    border-radius: 24px;
+    box-shadow: var(--sombra);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.main-logo { max-width: 90px; margin-bottom: 1rem; }
+
+header h1 { color: var(--verde-oscuro); font-size: 1.5rem; margin-bottom: 10px; }
+header p { color: var(--texto-secundario); font-size: 0.85rem; margin-bottom: 2rem; }
+
+/* Estilo de los cuadros de números */
+.otp-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 8px; /* Espacio entre cuadros */
+    margin-bottom: 2rem;
+}
+
+.otp-input {
+    width: 45px;
+    height: 55px;
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    border: 2px solid var(--borde);
+    border-radius: 12px;
+    background: #fcfcfc;
+    color: var(--verde-oscuro);
+    transition: all 0.2s ease;
+}
+
+.otp-input:focus {
+    outline: none;
+    border-color: var(--verde-principal);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.1);
+}
+
+/* Botón adaptable */
+.login-btn {
+    width: 100%;
+    padding: 16px;
+    background-color: var(--verde-principal);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.footer-links { margin-top: 1.5rem; }
+.back-link { text-decoration: none; color: var(--texto-secundario); font-size: 0.9rem; font-weight: 500; }
+
+ 
+@media (max-width: 380px) {
+    .otp-wrapper { gap: 5px; }
+    .otp-input {
+        width: 38px;
+        height: 50px;
+        font-size: 1.2rem;
+        border-radius: 8px;
+    }
+    .login-card { padding: 2rem 1rem; }
+}

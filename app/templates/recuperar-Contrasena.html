@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Contraseña | Del Campo a tu Casa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/recuperarContraStyle.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+</head>
+<body>
+    <div class="login-card"> 
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/logo_verduleria.webp') }}" alt="Logo Del Campo a tu Casa" class="main-logo">
+        </div>
+
+        <header>
+            <h1>Recuperar Acceso</h1>
+            <p>Ingresa tu correo para enviarte las instrucciones de restablecimiento.</p>
+        </header>
+
+        <form id="recoveryForm">
+            <div class="form-group">
+                <label for="usuario" class="form-label">Correo Electrónico</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-envelope icon-input"></i>
+                    <input type="email" 
+                           id="usuario" 
+                           name="usuario" 
+                           class="form-input" 
+                           placeholder="tu-correo@ejemplo.com" 
+                           required>
+                </div>
+                <div class="error-message" id="emailError"></div>
+            </div>
+
+            <button type="button" class="login-btn" id="procesarBtn">
+                <span>ENVIAR CÓDIGO</span>
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </form>
+
+        <div class="footer-links">
+            <a href="{{ url_for('routes.login') }}" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i> Volver al inicio de sesión
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const PREGUNTAS_URL = "{{ url_for('routes.codigo_restablecer') }}";
+    </script>
+    <script src="{{ url_for('static', filename='js/recuperarContrasena.js') }}"></script>
+</body>
+</html>

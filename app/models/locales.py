@@ -12,3 +12,4 @@ class Local(db.Model):
     horario = Column(String(100))
    
     menus = db.relationship('Menu', backref='local_obj', lazy=True, cascade="all, delete-orphan")
+    productos = db.relationship('Productos', backref='local_obj', lazy=True, cascade="all, delete-orphan")

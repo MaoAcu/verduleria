@@ -475,6 +475,7 @@
             background: rgba(0,0,0,0.5);
             z-index: 1000;
             backdrop-filter: blur(5px);
+            animation: slideUp 0.3s;
         }
 
         .product-detail-view.active {
@@ -490,7 +491,7 @@
             border-radius: 30px;
             overflow: hidden;
             animation: slideIn 0.3s;
-            max-height: 85vh;
+            max-height: 95vh;
             overflow-y: auto;
         }
 
@@ -602,7 +603,7 @@
             max-width: 400px;
             height: 100vh;
             padding: 1.5rem;
-            overflow-y: auto;
+            overflow-y: hidden;
             animation: slideRight 0.3s;
             box-shadow: -5px 0 20px rgba(0,0,0,0.1);
         }
@@ -653,6 +654,7 @@
         /* Carrusel */
         .carousel-section {
             margin: 1.2rem 0;
+            
         }
 
         .carousel-title {
@@ -901,18 +903,35 @@
             .cart-modal.active {
                 align-items: flex-end;
             }
-
-            .cart-panel {
+             .detail-card{
                 max-width: 100%;
-                height: 85vh;
+                height: 150vh !important;
                 border-radius: 30px 30px 0 0;
                 animation: slideUp 0.3s;
+                
             }
+            .cart-panel {
+                max-width: 100%;
+                height: 100vh; 
+                animation: slideUp 0.3s;
+                padding-bottom: 80px;
+            }
+             .cart-items-list{
+                 height:100px;
+             }
 
             @keyframes slideUp {
                 from { transform: translateY(100%); }
                 to { transform: translateY(0); }
             }
+              .whatsapp-btn {
+        position: sticky;       
+        bottom: 10px;
+        z-index: 10;
+        margin: 1rem 0 0;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            }
+            
         }
 
         @media (max-width: 380px) {
@@ -938,7 +957,7 @@
             }
         }
 
-        /* About Section Styles */
+ /* About Section Styles */
 .about-section {
     padding: 4rem 5%;
     background: linear-gradient(135deg, #f8fff8 0%, #f0f7f0 100%);

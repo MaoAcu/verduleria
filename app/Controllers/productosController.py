@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request, current_app 
 from app.extensions import db
-from app.models.menu import Menu
+from app.models.productos import Productos
+from app.models.complementos import Complementos
 import uuid
 import os
 from PIL import Image   
@@ -9,7 +10,7 @@ from PIL import Image
 UPLOAD_FOLDER = os.path.join('app', 'static', 'images', 'menu')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp', 'gif'}
 
-productos_bp = Blueprint("menu", __name__, url_prefix='/menu')
+productos_bp = Blueprint("productos", __name__, url_prefix='/producto')
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -61,35 +62,71 @@ def convertir_destacado(destacado_str):
         return None
     return True if destacado_str == '1' else False
 
-@productos_bp.route("/getmenu", methods=["GET"])
-def GetMenu():
+@productos_bp.route("/getproducto", methods=["GET"])
+def GetProductos():
     try:
-        local_id = 3
-        menus = Menu.query.filter_by(local=local_id, estado='1').all()
+        local_id = 4
+        productos = Productos.query.filter_by(idlocal=local_id, estado='1').all()
 
         data = [
             {
-                "idmenu": m.idmenu,
-                "local": m.local,
+                "id": m.id,
                 "nombre": m.nombre,
                 "descripcion": m.descripcion,
-                "precio": float(m.precio),
-                "imagen": m.imagen,
                 "categoria": m.categoria,
+                "peso": m.peso,
+                "precio": float(m.precio),
+                "stock": m.stock,
+                "imagen": m.imagen_url,
                 "estado": m.estado,
-                "subcategoria": m.subcategoria,
-                "destacado": m.destacado
+                "idlocal": m.idlocal,
+                "estado":m.estado
             }
-            for m in menus
+            for m in productos
         ]
+        
+        
+        
         return jsonify(data), 200
 
     except Exception as e:
         print(f"[ERROR get_menu]: {e}")
         return jsonify({"error": "No se pudo obtener el menú"}), 500
     
+@productos_bp.route("/getComplements", methods=["GET"])
+def GetComplements():
+    try:
+       
+        local_id = 4
+        
+        # Filtrar complementos por local
+        complementos = Complementos.query.all()
+        
+       
+
+        data = [
+            {
+                "id": c.id,
+                "nombre": c.nombre,
+                "precio": float(c.precio),
+                "imagen_url": c.imagen_url,
+                "idlocal": c.idlocal,
+                "stock": c.stock
+            }
+            for c in complementos
+        ]
+        
+        return jsonify(data), 200
+
+    except Exception as e:
+        print(f"[ERROR get_complements]: {e}")
+        import traceback
+        traceback.print_exc()
+         
+        return jsonify([]), 200
+    
 @productos_bp.route("/createItem", methods=["POST"])
-def CreateMenuSection():
+def CreateProductoSection():
     try:
         data = request.form
         file = request.files.get('image')
@@ -136,7 +173,7 @@ def CreateMenuSection():
         estado_str = data.get('estado', 'active')
         estado_num = 1 if estado_str == 'active' else 0
 
-        menu = Menu(
+        menu = Productos(
             local=1,
             nombre=data.get('nombre'),
             descripcion=data.get('descripcion'),
@@ -157,10 +194,10 @@ def CreateMenuSection():
         print(f"[ERROR CreateMenuSection]: {e}")
         return jsonify({"error": "Error al crear producto"}), 500
 
-@productos_bp.route("/menu/<int:idmenu>", methods=["PATCH"])
-def PatchMenuSection(idmenu):
+@productos_bp.route("/updateProductos/<int:idpruducto>", methods=["PATCH"])
+def PatchProductoSection(idpruducto):
     try:
-        menu = Menu.query.filter_by(idmenu=idmenu, local=3).first()
+        menu = Productos.query.filter_by(idmenu=idpruducto, local=4).first()
         if not menu:
             return jsonify({"error": "Producto no encontrado"}), 404
 
@@ -238,10 +275,10 @@ def PatchMenuSection(idmenu):
         print(f"[ERROR PatchMenu]: {e}")
         return jsonify({"error": "No se pudo actualizar"}), 500
     
-@productos_bp.route("/menu/<int:idmenu>", methods=["DELETE"])
-def DeleteMenu(idmenu):
+@productos_bp.route("/deleteProducto/<int:idmenu>", methods=["DELETE"])
+def DeleteProducto(idpruducto):
     try:
-        menu = Menu.query.filter_by(idmenu=idmenu, local=3).first()   
+        menu = Productos.query.filter_by(idmenu=idpruducto, local=3).first()   
 
         if not menu:
             return jsonify({"error": "Producto no encontrado"}), 404
@@ -265,3 +302,25 @@ def DeleteMenu(idmenu):
         db.session.rollback()
         print(f"[ERROR DeleteMenu]: {e}")
         return jsonify({"error": "No se pudo eliminar el producto"}), 500
+@productos_bp.route("/updateStock", methods=["PATCH"])
+def PatchStoke():
+    try:
+        data = request.get_json()
+        items = data.get('items', [])
+        
+        for item in items:
+            producto = Productos.query.filter_by(idmenu=item['id'], local=4).first()
+            if producto:
+                if producto.stock >= item['cantidad']:
+                    producto.stock -= item['cantidad']
+                else:
+                    return jsonify({
+                        "error": f"Stock insuficiente para producto {item['id']}"
+                    }), 400
+        
+        db.session.commit()
+        return jsonify({"message": "Stock actualizado correctamente"}), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500

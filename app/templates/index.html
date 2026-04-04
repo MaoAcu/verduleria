@@ -22,7 +22,7 @@
             Del Campo a su Casa
             <span>Mercado Fresco</span>
         </div>
-    </div>
+       </div>
         
         <!-- Botón hamburguesa -->
         <div class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu(event)">
@@ -97,13 +97,40 @@
         </div>
     </section>
 
-    <!-- Productos Grid -->
-    <section class="featured">
-        <div class="product-grid" id="productGrid"></div>
-    </section>
+ 
+   <!-- Productos Grid -->
+<section class="featured">
+    <div class="product-grid" id="productGrid"></div>
+</section>
 
-    <!-- Product Detail Modal -->
-    <div class="product-detail-view" id="productDetail">
+<!-- Productos Carrusel - Solo visible en Móvil -->
+<section class="products-mobile-carousel" id="mobileProductsCarousel">
+    <div class="carousel-container">
+        <div class="carousel-track" id="mobileCarouselTrack"></div>
+    </div>
+    
+    <!-- Controles del carrusel móvil -->
+    <div class="carousel-controls">
+        <div class="carousel-nav-buttons">
+            <button class="carousel-btn" id="prevMobileBtn" onclick="moveMobileCarousel(-1)" disabled>
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        </div>
+        
+        <!-- Indicadores dinámicos -->
+        <div class="carousel-indicators" id="mobileCarouselIndicators"></div>
+        
+        <div class="carousel-nav-buttons">
+            <button class="carousel-btn" id="nextMobileBtn" onclick="moveMobileCarousel(1)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Información de página -->
+    <div class="carousel-page-info" id="mobilePageInfo"></div>
+</section>
+     <div class="product-detail-view" id="productDetail">
         <div class="detail-card">
             <div class="detail-header">
                 <button class="back-btn" onclick="closeDetail()">←</button>
@@ -122,25 +149,25 @@
                     <button class="qty-btn" onclick="changeQty(1)">+</button>
                 </div>
                 
-                <textarea id="detailComment" placeholder="💬 Instrucciones especiales (opcional)" rows="2"></textarea>
-                
                 <button class="detail-add-btn" onclick="addToCartFromDetail()">
                     <i class="fas fa-cart-plus"></i> Agregar
                 </button>
             </div>
         </div>
     </div>
-
     <!-- Cart Modal -->
     <div class="cart-modal" id="cartModal">
         <div class="cart-panel">
+            
+
+          
             <div class="cart-header">
                 <h2><i class="fas fa-shopping-cart"></i> Tu carrito</h2>
                 <button class="close-cart" onclick="closeCartModal()">×</button>
             </div>
-            
-            <div class="cart-items-list" id="cartItemsList"></div>
-            
+            <div class="cart-products">
+                  <div class="cart-items-list" id="cartItemsList"></div>
+            </div>
             <div class="carousel-section">
                 <div class="carousel-title">
                     <h4>✨ Complementa</h4>
@@ -158,11 +185,12 @@
                 <span>Total:</span>
                 <span id="cartTotal">₡0</span>
             </div>
-            
-            <button class="whatsapp-btn" onclick="sendOrder()">
+             
+           <button class="whatsapp-btn" onclick="sendOrder()">
                 <i class="fab fa-whatsapp"></i> Enviar por WhatsApp
-            </button>
+          </button>
         </div>
+         
     </div>
   
     <!-- Footer -->
@@ -189,8 +217,13 @@
         </div>
     </footer>
     <script>
-        const IMG_URL="{{ url_for('static', filename='images/') }}"
+       
+    const URL_IMG_BASE = "{{ url_for('static', filename='images/') }}";
+    const URL_IMG_DEFAULT="{{ url_for('static', filename='images/LogoDCC.webp') }}"
+    
     </script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
+
+ 

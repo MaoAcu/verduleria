@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Contraseña | Del Campo a tu Casa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/restablcerContraStyle.css') }}"> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modalRes.css') }}"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+</head>
+<body>
+    
+    <div class="login-card">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/logo_verduleria.webp') }}" alt="Logo" class="main-logo">
+        </div>
+
+        <header>
+            <h1>Nueva Contraseña</h1>
+            <p>Crea una combinación segura para proteger tu cuenta.</p>
+        </header>
+
+        <div class="token-status token-valid" id="tokenStatus">
+            <i class="fa-solid fa-circle-check"></i> El código es válido
+        </div>
+
+        <form id="resetForm">
+            <div class="form-group">
+                <label class="form-label" for="newPassword">Nueva contraseña</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-lock icon-input"></i>
+                    <input type="password" id="newPassword" name="newPassword" class="form-input" placeholder="Ingresa tu nueva contraseña" required>
+                    <i id="toggleNewPassword" class="fa-solid fa-eye eye-icon"></i>
+                </div>
+                
+                <div class="password-strength-container">
+                    <div class="password-strength-bar" id="passwordStrengthBar"></div>
+                </div>
+                <div class="strength-text" id="strengthText"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="confirmPassword">Confirmar contraseña</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-shield-check icon-input"></i>
+                    <input type="password" id="confirmPassword" class="form-input" placeholder="Confirma tu nueva contraseña" required>
+                    <i id="toggleConfirmPassword" class="fa-solid fa-eye eye-icon"></i>
+                </div>
+                <div class="error-message" id="confirmError"></div>
+            </div>
+
+            <div class="requirements">
+                <div class="requirements-title">Tu contraseña debe tener:</div>
+                <div class="requirement" id="req-length">
+                    <span class="req-icon">✗</span> 8+ caracteres
+                </div>
+                <div class="requirement" id="req-uppercase">
+                    <span class="req-icon">✗</span> Una mayúscula
+                </div>
+                <div class="requirement" id="req-number">
+                    <span class="req-icon">✗</span> Un número
+                </div>
+                <div class="requirement" id="req-special">
+                    <span class="req-icon">✗</span> Un carácter especial
+                </div>
+            </div>
+
+            <button type="submit" class="login-btn" id="resetBtn" disabled>
+                <span>ACTUALIZAR CONTRASEÑA</span>
+                <i class="fa-solid fa-rotate"></i>
+            </button>
+        </form>
+
+        <div class="footer-links">
+            <a href="{{ url_for('auth.login') }}" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i> Volver al inicio
+            </a>
+        </div>
+    </div>
+
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-icon-container">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h2>¡Todo listo!</h2>
+            <p>Tu contraseña se ha actualizado correctamente.</p>
+        </div>
+    </div>
+ 
+    <script src="{{ url_for('static', filename='js/restablecer.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modalRes.js') }}"></script>
+</body>
+</html>

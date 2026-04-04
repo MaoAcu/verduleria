@@ -11,7 +11,9 @@ from app.Controllers.routes import routes_bp
 from app.Controllers.AunthController import auth_bp
 from app.Controllers.productosController import productos_bp
 from app.Controllers.credentialController import credential_bp
-from app.models import Usuario, Login, Local
+from app.Controllers.MensajeriaController import mensajes_bp
+from app.Controllers.pedidosController import pedidos_bp
+from app.models import Usuario, Login, Local,Productos,Complementos
  
 load_dotenv() 
 
@@ -39,5 +41,7 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(productos_bp)
     app.register_blueprint(credential_bp)
+    app.register_blueprint(mensajes_bp)
+    app.register_blueprint(pedidos_bp)
     
     return app

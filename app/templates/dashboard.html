@@ -1,126 +1,544 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Administrativo - Mercado Fresco</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Dashboard - Mercado Fresco 🥬</title>
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    
 </head>
-<body class="admin-mode">
-    <!-- Header para admin -->
-    <header class="admin-header">
-        <div class="logo" onclick="window.location.href='index.html'">
-            <h1>🌿 Mercado Fresco</h1>
-        </div>
-      
-    </header>
-
-    <!-- Admin Dashboard -->
-    <section class="admin-dashboard">
-        <div class="admin-header">
-            <h2><i class="fas fa-chart-line"></i> Panel de Administración</h2>
-            <button class="btn-admin" onclick="openAddProductModal()">
-                <i class="fas fa-plus"></i> Agregar Producto
-            </button>
-        </div>
-
-        <!-- Estadísticas -->
-        <div class="admin-stats" id="admin-stats">
-            <!-- Se llenará dinámicamente -->
-        </div>
-
-        <!-- Tabla de productos -->
-        <div class="admin-products-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Producto</th>
-                        <th>Categoría</th>
-                        <th>Precio</th>
-                        <th>Stock</th>
-                        <th>Destacado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="admin-products-table-body">
-                    <!-- Se llenará dinámicamente -->
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <!-- Modal Producto -->
-    <div class="modal" id="product-modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">&times;</span>
-            <h2 id="modal-title">Agregar Producto</h2>
-            <form id="product-form" onsubmit="saveProduct(event)">
-                <input type="hidden" id="product-id">
-                
-                <div class="form-group">
-                    <label for="product-name">Nombre del producto</label>
-                    <input type="text" id="product-name" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="product-description">Descripción</label>
-                    <textarea id="product-description" required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="product-category">Categoría</label>
-                    <select id="product-category" required>
-                        <option value="frutas">Frutas</option>
-                        <option value="verduras">Verduras</option>
-                        <option value="lacteos">Lácteos</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="product-weight">Peso/Unidad</label>
-                    <input type="text" id="product-weight" placeholder="Ej: 500G, 1KG, 3 UNIDADES" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="product-price">Precio</label>
-                    <input type="number" id="product-price" min="0" step="100" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="product-stock">Stock</label>
-                    <input type="number" id="product-stock" min="0" required>
-                </div>
-
-                <div class="form-group">
-                    <label>
-                        <input type="checkbox" id="product-featured"> Producto Destacado
-                    </label>
-                </div>
-
-                <div class="modal-actions">
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
-                </div>
-            </form>
-        </div>
+<body>
+    <!-- Loader -->
+    <div id="loader" class="loader-container">
+        <div class="spinner"></div>
+        <p>Cargando...</p>
     </div>
 
-    <!-- Modal Eliminar -->
-    <div class="modal" id="delete-modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeDeleteModal()">&times;</span>
-            <h2>Confirmar Eliminación</h2>
-            <p>¿Estás seguro de que deseas eliminar este producto?</p>
-            <div class="modal-actions">
-                <button class="btn btn-danger" onclick="confirmDelete()">Eliminar</button>
-                <button class="btn btn-secondary" onclick="closeDeleteModal()">Cancelar</button>
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+        <!-- Sidebar Overlay -->
+        <div id="sidebarOverlay" class="sidebar-overlay"></div>
+        
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="logo" onclick="window.location.href='index.html'">
+                <h2><i class="fas fa-leaf"></i> Mercado Fresco</h2>
+                <p class="restaurant-subtitle">Productos del Campo</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="sidebar-section-title">PRODUCTOS POR CATEGORÍA</div>
+                <ul id="categoriasList"></ul>
+
+                <div class="sidebar-divider"></div>
+
+                <ul>
+                    <li>
+                        <a href="#" onclick="switchSection('mensajes')">
+                           <i class="fas fa-envelope"></i>
+                           <span>Mensajes</span>
+                           <span id="sidebarMensajesBadge" class="badge" style="display: none;"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="switchSection('configuracion')">
+                            <i class="fas fa-cog"></i>
+                            <span>Configuración</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="switchSection('estadisticas')">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Estadísticas</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user-circle"></i>
+                    <div>
+                        <p class="user-name">Administrador</p>
+                        <p class="user-role">Verdulería</p>
+                    </div>
+                </div>
+                <a href="javascript:void(0)" id="logoutBtn" class="btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <header class="top-bar">
+                <button id="menuToggle" class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <h1 id="sectionTitle">Gestión de Productos</h1>
+                
+                <div class="header-actions">
+                    <div class="stock-alert" id="stockAlert" style="display: none;" onclick="switchSection('estadisticas')">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span id="stockAlertCount">0</span><span> productos con stock bajo</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Sección de categorías -->
+            <div id="categoriasSection" class="content-section" style="display: block;">
+                <div class="section-header">
+                    <h2><i class="fas fa-folder"></i> Categorías</h2>
+                    <button class="btn-add-item" onclick="openAddCategoriaModal()">
+                        <i class="fas fa-plus"></i> <span>Nueva</span>
+                    </button>
+                </div>
+                <div id="categoriasGrid" class="categorias-grid"></div>
+            </div>
+
+            <!-- Sección de productos por categoría -->
+            <div id="productosSection" style="display: none;"></div>
+
+            <!-- Sección de Estadísticas -->
+            <div id="estadisticasSection" class="content-section" style="display: none;">
+                <div class="stats-container">
+                    <h2><i class="fas fa-chart-bar"></i> Estadísticas</h2>
+                    
+                    <div class="stats-grid" id="statsGrid"></div>
+
+                    <div class="stock-table-container">
+                        <h3><i class="fas fa-boxes"></i> Control de Stock</h3>
+                        <table class="stock-table">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Categoría</th>
+                                    <th>Stock</th>
+                                    <th>Estado</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stockTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de Configuración -->
+            <div id="configuracionSection" class="content-section" style="display: none;">
+                <div class="config-container">
+                    <h2><i class="fas fa-cog"></i> Configuración</h2>
+                    
+                    <div class="config-grid">
+                        <div class="config-card">
+                            <h3><i class="fas fa-store"></i> Información</h3>
+                            <div class="config-form">
+                                <div class="form-group">
+                                    <label>Nombre del Negocio</label>
+                                    <input type="text" id="businessName" value="Mercado Fresco">
+                                </div>
+                                <div class="form-group">
+                                    <label>Descripción</label>
+                                    <textarea id="businessDescription" rows="2">Productos frescos</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="config-card">
+                            <h3><i class="fas fa-bell"></i> Alertas</h3>
+                            <div class="config-form">
+                                <div class="form-group">
+                                    <label>Stock Mínimo</label>
+                                    <input type="number" id="minStockAlert" min="1" value="5">
+                                </div>
+                                <button class="btn-save" onclick="saveConfig()">
+                                    <i class="fas fa-save"></i> Guardar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="mensajesSection" class="content-section" style="display: none;">
+                <div class="stats-container">
+                    <div class="section-header">
+                        <h2><i class="fas fa-envelope"></i> Pedidos Pendientes</h2>
+                        <div class="pending-badge" id="pendingBadge" style="display: none;">
+                            <i class="fas fa-clock"></i>
+                            <span id="pendientesCount">0</span>
+                       </div>
+                    </div>
+        
+                    <div class="mensajes-grid" id="mensajesGrid"></div>
+                </div>
             </div>
         </div>
     </div>
 
- 
+    <!-- Botones flotantes -->
+    <button id="fabCategorias" class="fab-categorias" style="display: none;" onclick="switchSection('categorias')">
+        <i class="fas fa-folder"></i>
+        <span>Gestionar Categorías</span>
+    </button>
+    <!-- Sección de Mensajes -->
+
+    <!-- MODAL DE COMPLEMENTOS -->
+    <div id="complementosModal" class="modal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3><i class="fas fa-pizza-slice"></i> Complementos</h3>
+                <span class="close-modal" onclick="closeComplementosModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="complementos-toolbar">
+                    <button class="btn-add-item" onclick="openAddComplementModal()">
+                        <i class="fas fa-plus"></i> <span>Nuevo</span>
+                    </button>
+                    <div class="complementos-search">
+                        <input type="text" id="complementSearch" placeholder="Buscar..." onkeyup="filterComplements()">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </div>
+                
+                <div class="complementos-stats" id="complementosStats"></div>
+                <div class="complementos-grid" id="complementosGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA AGREGAR/EDITAR COMPLEMENTO -->
+    <div id="complementModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="complementModalTitle">Nuevo Complemento</h3>
+                <span class="close-modal" onclick="closeComplementItemModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="complementForm" enctype="multipart/form-data" onsubmit="saveComplement(event)">
+                    <input type="hidden" id="complementId" name="id">
+                    
+                    <div class="form-group">
+                        <label>Nombre <span class="required">*</span></label>
+                        <input type="text" id="complementName" required placeholder="Ej: Achiote">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <textarea id="complementDescription" rows="2" placeholder="Descripción"></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Precio (₡) <span class="required">*</span></label>
+                            <div class="price-input">
+                                <span class="currency">₡</span>
+                                <input type="number" id="complementPrice" step="10" min="0" required placeholder="0">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group col-md-6">
+                            <label>Stock</label>
+                            <input type="number" id="complementStock" min="0" placeholder="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Imagen</label>
+                        <div class="image-upload-container">
+                            <input type="file" id="complementImageFile" accept=".jpg,.jpeg,.png,.webp" style="display: none;" onchange="previewImage(this, 'complementImagePreview', 'complementImageFileName')">
+                            <div class="image-preview" id="complementImagePreview"></div>
+                            <div class="image-actions">
+                                <button type="button" class="btn-image-upload" onclick="document.getElementById('complementImageFile').click()">
+                                    <i class="fas fa-cloud-upload-alt"></i> Seleccionar
+                                </button>
+                                <span id="complementImageFileName" class="file-name"></span>
+                            </div>
+                        </div>
+                        <input type="hidden" id="complementImage" name="imagen_url">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Estado</label>
+                            <div class="status-toggle">
+                                <button type="button" class="status-btn active" data-status="active" onclick="setComplementStatus('active')">Disponible</button>
+                                <button type="button" class="status-btn" data-status="inactive" onclick="setComplementStatus('inactive')">No disponible</button>
+                                <input type="hidden" id="complementStatus" value="active">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group col-md-6">
+                            <label>¿Popular?</label>
+                            <div class="destacado-container">
+                                <button type="button" class="estrella-simple" id="complementPopular" onclick="toggleComplementPopular()">
+                                    <i class="far fa-star"></i>
+                                </button>
+                                <span id="complementPopularText">Normal</span>
+                                <input type="hidden" id="complementIsPopular" value="0">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="closeComplementItemModal()">Cancelar</button>
+                        <button type="submit" class="btn-save">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para categorías -->
+    <div id="categoriaModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="categoriaModalTitle">Nueva Categoría</h3>
+                <span class="close-modal" onclick="closeCategoriaModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="categoriaForm" onsubmit="saveCategoria(event)">
+                    <input type="hidden" id="categoriaId">
+                    
+                    <div class="form-group">
+                        <label>Nombre <span class="required">*</span></label>
+                        <input type="text" id="categoriaNombre" required placeholder="Ej: Frutas">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Icono</label>
+                        <select id="categoriaIcono">
+                            <option value="fa-apple-whole">🍎 Frutas</option>
+                            <option value="fa-carrot">🥕 Verduras</option>
+                            <option value="fa-cheese">🧀 Lácteos</option>
+                            <option value="fa-bowl-food">🍲 Abarrotes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="closeCategoriaModal()">Cancelar</button>
+                        <button type="submit" class="btn-save">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para productos -->
+    <div id="editModal" class="modal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3 id="modalTitle">Editar Producto</h3>
+                <span class="close-modal" onclick="closeItemModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="itemForm" enctype="multipart/form-data" onsubmit="saveProduct(event)">
+                    <input type="hidden" id="itemId" name="id">
+                    
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Nombre <span class="required">*</span></label>
+                            <input type="text" id="itemName" required placeholder="Ej: Manzana">
+                        </div>
+                        
+                        <div class="form-group col-md-6">
+                            <label>Categoría <span class="required">*</span></label>
+                            <select id="categoria" required>
+                                <option value="">Seleccionar</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <textarea id="itemDescription" rows="2" placeholder="Descripción"></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label>Precio <span class="required">*</span></label>
+                            <div class="price-input">
+                                <span class="currency">₡</span>
+                                <input type="number" id="itemPrice" step="10" min="0" required placeholder="0">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group col-md-4">
+                            <label>Stock <span class="required">*</span></label>
+                            <input type="number" id="itemStock" min="0" required placeholder="0">
+                        </div>
+                        
+                        <div class="form-group col-md-4">
+                            <label>Peso</label>
+                            <input type="text" id="itemWeight" placeholder="1 kg">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Imagen</label>
+                            <div class="image-upload-container">
+                                <input type="file" id="itemImageFile" accept=".jpg,.jpeg,.png,.webp" style="display: none;" onchange="previewImage(this, 'imagePreview', 'imageFileName')">
+                                <div class="image-preview" id="imagePreview"></div>
+                                <div class="image-actions">
+                                    <button type="button" class="btn-image-upload" onclick="document.getElementById('itemImageFile').click()">
+                                        <i class="fas fa-cloud-upload-alt"></i> Seleccionar
+                                    </button>
+                                    <span id="imageFileName" class="file-name"></span>
+                                </div>
+                            </div>
+                            <input type="hidden" id="itemImage" name="imagen_url">
+                        </div>
+                        
+                        <div class="form-group col-md-6">
+                            <div class="options-container">
+                                <div class="form-group">
+                                    <label>Estado</label>
+                                    <div class="status-toggle">
+                                        <button type="button" class="status-btn active" data-status="active" onclick="setItemStatus('active')">Disponible</button>
+                                        <button type="button" class="status-btn" data-status="inactive" onclick="setItemStatus('inactive')">No disponible</button>
+                                        <input type="hidden" id="itemStatus" value="active">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>¿Destacado?</label>
+                                    <div class="destacado-container">
+                                        <button type="button" class="estrella-simple" id="estrellaSimple" onclick="toggleDestacado()">
+                                            <i class="far fa-star"></i>
+                                        </button>
+                                        <span id="destacadoText">No destacado</span>
+                                        <input type="hidden" id="itemDestacado" value="0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="closeItemModal()">Cancelar</button>
+                        <button type="submit" class="btn-save">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para stock -->
+    <div id="stockModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3>Actualizar Stock</h3>
+                <span class="close-modal" onclick="closeStockModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="stockForm" onsubmit="updateStock(event)">
+                    <input type="hidden" id="stockProductId">
+                    
+                    <div class="form-group">
+                        <label id="stockProductName">Producto</label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Nuevo Stock</label>
+                        <input type="number" id="newStock" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="addToCurrent"> Sumar al actual
+                        </label>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="closeStockModal()">Cancelar</button>
+                        <button type="submit" class="btn-save">Actualizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación -->
+    <div id="deleteModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-icon">
+                <i class="fa-solid fa-trash-can" style="color: #dc3545;"></i>
+            </div>
+            <div class="modal-body">
+                <h3 id="deleteModalTitle">¿Eliminar?</h3>
+                <p id="deleteModalMessage">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeDeleteModal()">Cancelar</button>
+                <button class="btn-confirm" id="confirmDeleteBtn" style="background: #dc3545;">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal informativo -->
+    <div id="infoModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-icon" id="infoModalIcon">
+                <i class="fas fa-check-circle" style="color: #28a745;"></i>
+            </div>
+            <div class="modal-body">
+                <h3 id="infoModalTitle">Éxito</h3>
+                <p id="infoModalMessage">Operación completada</p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-confirm" onclick="closeInfoModal()">Aceptar</button>
+            </div>
+        </div>
+    </div>
+    <!-- Modal de confirmación personalizado -->
+<div id="modalConfirm" class="modal-confirm">
+    <div class="modal-confirm-content">
+        <div class="modal-confirm-header">
+            <div class="modal-confirm-icon" id="confirmIcon">
+                <i class="fas fa-question-circle"></i>
+            </div>
+            <h3 class="modal-confirm-title" id="confirmTitle">Confirmar</h3>
+        </div>
+        <div class="modal-confirm-body">
+            <p class="modal-confirm-message" id="confirmMessage">¿Estás seguro?</p>
+        </div>
+        <div class="modal-confirm-actions">
+            <button class="modal-confirm-btn modal-confirm-btn-cancel" id="confirmCancelBtn">Cancelar</button>
+            <button class="modal-confirm-btn modal-confirm-btn-confirm" id="confirmOkBtn">Aceptar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de alerta personalizado -->
+<div id="modalAlert" class="modal-alert">
+    <div class="modal-alert-content">
+        <div class="modal-alert-header">
+            <div class="modal-alert-icon" id="alertIcon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3 class="modal-alert-title" id="alertTitle">Éxito</h3>
+        </div>
+        <div class="modal-alert-body">
+            <p class="modal-alert-message" id="alertMessage">Operación completada</p>
+        </div>
+        <div class="modal-alert-actions">
+            <button class="modal-alert-btn" id="alertOkBtn">Aceptar</button>
+        </div>
+    </div>
+</div>
+     <script>
+     
+        const URL_IMG_BASE = "{{ url_for('static', filename='images/') }}";
+        const URL_IMG_DEFAULT = "{{ url_for('static', filename='images/LogoDCC.webp') }}";
+        const URL_LOG = "{{ url_for('auth.logout') }}";
+    </script>
+
     <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/mensajeria.js') }}" ></script>
 </body>
 </html>
