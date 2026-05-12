@@ -71,7 +71,7 @@ def confirmarPedido():
         
         productos = json.loads(mensaje.productos)
         
-        
+        # Agrupar productos duplicados
         productosAgrupados = {}
         for producto in productos:
             productoId = producto['id']
@@ -80,41 +80,56 @@ def confirmarPedido():
                     'id': producto['id'],
                     'nombre': producto['nombre'],
                     'cantidad': 0,
-                    'precio': producto['precio']
+                    'precio': producto['precio'],
+                    'tipo': None  # 'producto' o 'complemento'
                 }
             productosAgrupados[productoId]['cantidad'] += producto['cantidad']
         
-        # Convertir a lista
         productosUnicos = list(productosAgrupados.values())
         
-        # Verificar y descontar stock de cada producto (ya agrupado)
+        # Verificar y descontar stock (buscando en productos o complementos)
         for producto in productosUnicos:
+            # Primero buscar en productos
             productoDb = Productos.query.filter_by(
                 id=producto['id'],
                 idlocal=ID_LOCAL,
                 estado=1
             ).first()
             
+            tipo = 'producto'
+            
+            # Si no está en productos, buscar en complementos
+            if not productoDb:
+                complementoDb = Complementos.query.filter_by(
+                    id=producto['id'],
+                    idlocal=ID_LOCAL
+                ).first()
+                productoDb = complementoDb
+                tipo = 'complemento'
+            
+            # Si no existe en ninguna tabla
             if not productoDb:
                 return jsonify({
                     'success': False, 
-                    'error': f'Producto {producto["nombre"]} no encontrado'
+                    'error': f'Producto/Complemento "{producto["nombre"]}" no encontrado (ID: {producto["id"]})'
                 })
             
+            # Verificar stock
             if productoDb.stock < producto['cantidad']:
                 return jsonify({
                     'success': False,
-                    'error': f'Stock insuficiente para "{productoDb.nombre}". Disponible: {productoDb.stock}, Solicitado: {producto["cantidad"]}'
+                    'error': f'Stock insuficiente para "{productoDb.nombre}" ({tipo}). Disponible: {productoDb.stock}, Solicitado: {producto["cantidad"]}'
                 })
             
-            # Descontar el stock
+            # Descontar stock
             productoDb.stock -= producto['cantidad']
-            
-        # Crea un registro en historial  
+            print(f"✅ Descontado {producto['cantidad']} de {productoDb.nombre} ({tipo}). Stock restante: {productoDb.stock}")
+        
+        # Crear registro en historial
         historial = HistorialPedido(
             mensaje_id=mensaje.id,
             idlocal=ID_LOCAL,
-            productos=mensaje.productos,   
+            productos=mensaje.productos,
             total=mensaje.total,
             estado='confirmado',
             fecha_confirmacion=datetime.now()

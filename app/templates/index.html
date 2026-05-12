@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 
     <meta name="theme-color" content="#2c3e50">
-    <meta property="og:title" content="Del Campo a su Casa">
+    <meta property="og:title" content="Frutas de Altura">
     <meta property="og:description" content="Lo mas fresco del mercado">
     <meta property="og:image" content="	{{ url_for('static', filename='images/LogoDCC.webp') }}">
     <meta property="og:type" content="website">
-    <title>Del Campo a su Casa - Mercado Fresco</title>
+    <title>Frutas de Altura - Mercado Fresco</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
@@ -19,7 +19,7 @@
         <div class="logo-area" onclick="showClientView()">
             <img src="{{ url_for('static', filename='images/LogoDCC.webp') }}" alt="Del Campo a su Casa" style="width: 48px; height: 48px; object-fit: cover; border-radius: 14px; box-shadow: 0 6px 12px rgba(45,106,79,0.25);">
         <div class="logo-text">
-            Del Campo a su Casa
+            Frutas de Altura
             <span>Mercado Fresco</span>
         </div>
        </div>
@@ -54,7 +54,7 @@
 
     <!-- Hero Section -->
     <section class="hero" id="hero">
-        <h2>DEL CAMPO A TU MESA</h2>
+        <h2>Frutas de Altura</h2>
         <h3>Productos frescos,<br>sabor auténtico</h3>
         <p>Frutas, verduras y lácteos seleccionados con cuidado</p>
         <div class="hero-buttons">
@@ -89,6 +89,7 @@
                 <span class="filter-chip" onclick="filterByCategory('frutas', this)"><i class="fas fa-apple-alt"></i> Frutas</span>
                 <span class="filter-chip" onclick="filterByCategory('verduras', this)"><i class="fas fa-carrot"></i> Verduras</span>
                 <span class="filter-chip" onclick="filterByCategory('lacteos', this)"><i class="fas fa-cheese"></i> Lácteos</span>
+                <span class="filter-chip" onclick="filterByCategory('organicos', this)"><i class="fas fa-leaf"></i> Organicos</span>
             </div>
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Buscar productos...">
@@ -109,23 +110,7 @@
         <div class="carousel-track" id="mobileCarouselTrack"></div>
     </div>
     
-    <!-- Controles del carrusel móvil -->
-    <div class="carousel-controls">
-        <div class="carousel-nav-buttons">
-            <button class="carousel-btn" id="prevMobileBtn" onclick="moveMobileCarousel(-1)" disabled>
-                <i class="fas fa-chevron-left"></i>
-            </button>
-        </div>
-        
-        <!-- Indicadores dinámicos -->
-        <div class="carousel-indicators" id="mobileCarouselIndicators"></div>
-        
-        <div class="carousel-nav-buttons">
-            <button class="carousel-btn" id="nextMobileBtn" onclick="moveMobileCarousel(1)">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-        </div>
-    </div>
+  
     
     <!-- Información de página -->
     <div class="carousel-page-info" id="mobilePageInfo"></div>
@@ -197,7 +182,7 @@
     <footer>
         <div class="footer-content">
             <div class="footer-section">
-                <h3><i class="fas fa-leaf"></i> Del Campo a su Casa</h3>
+                <h3><i class="fas fa-leaf"></i>Frutas de Altura</h3>
                 <p>Productos frescos del campo directamente a tu mesa.</p>
             </div>
             <div class="footer-section">
@@ -208,12 +193,12 @@
             </div>
             <div class="footer-section">
                 <h3>Contacto</h3>
-                <p><i class="fas fa-envelope"></i> info@delcampo.com</p>
-                <p><i class="fas fa-phone-alt"></i> +506 300 123 4567</p>
+                <p><i class="fas fa-envelope"></i> info@frutasdealtura.com</p>
+                <p><i class="fas fa-phone-alt"></i> +506 8888888</p>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; <span id="currentYear"></span> Del Campo a su Casa - Mercado Fresco</p>
+            <p>&copy; <span id="currentYear"></span> Frutas de Altura - Mercado Fresco</p>
         </div>
     </footer>
     <script>

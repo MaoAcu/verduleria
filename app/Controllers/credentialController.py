@@ -1,4 +1,3 @@
-
 from flask import Blueprint, request, jsonify,session,url_for
 from app.extensions import db
 from app.Service import email_service
@@ -13,12 +12,11 @@ def ValidarUsuarioRecovery():
     try:
         data = request.get_json()
         correo = data.get('usuario')
-         
 
         if not correo:
             return jsonify({'success': False, 'message': 'Correo requerido'})
 
-        #   busca en la tabla login 
+        # Busca en la tabla login 
         login = Login.query.filter_by(correo=correo).first()
         if not login:
             return jsonify({
@@ -26,29 +24,29 @@ def ValidarUsuarioRecovery():
                 'message': 'El correo no está asociado a ninguna cuenta.'
             })
 
-        #   valida el estado
-        if login.estado != 1 :
+        # Valida el estado
+        if login.estado != 1:
             return jsonify({
                 'success': False,
-                'message': 'Usuario bloqueado. Solo puede recuperar contraseña.'
+                'message': 'Usuario bloqueado. No puede recuperar contraseña.'
             })
 
-        #   Ggenra el codigo
+        # Genera el código
         code = random.randint(100000, 999999)
         login.codigo = code
         db.session.commit()
 
-        #   variables de sesion
+        # Variables de sesión
         session['recovery_idusuario'] = login.idusuario
         session['recovery_correo'] = login.correo
-        
-
-        #   envia el correo
+        print(session.get('recovery_idusuario'))
+        # Envía el correo
         email_service.SendVerificationCode(email=correo, code=code)
 
         return jsonify({
             'success': True,
             'message': 'Código de verificación enviado al correo.'
+             
         })
 
     except Exception as e:

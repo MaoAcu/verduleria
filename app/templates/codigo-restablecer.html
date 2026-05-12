@@ -2,50 +2,62 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Verificar Código | Del Campo a tu Casa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación | Frutas de Altura</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/codigoVerificacion.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/popupstyle.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 </head>
 <body>
-
-    <div class="login-card">
-        <div class="logo-container">
-            <img src="{{ url_for('static', filename='images/logo_verduleria.webp') }}" alt="Logo" class="main-logo">
-        </div>
-
-        <header>
-            <h1>Código de Seguridad</h1>
-            <p>Introduce el código enviado a tu correo para continuar.</p>
-        </header>
-
-        <form id="recoveryForm" method="POST" action="{{ url_for('routes.codigo_restablecer') }}">
-            <div class="otp-wrapper">
-                <input type="text" class="otp-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required>
-                <input type="text" class="otp-input" maxlength="1" inputmode="numeric" required>
-                <input type="text" class="otp-input" maxlength="1" inputmode="numeric" required>
-                <input type="text" class="otp-input" maxlength="1" inputmode="numeric" required>
-                <input type="text" class="otp-input" maxlength="1" inputmode="numeric" required>
-                <input type="text" class="otp-input" maxlength="1" inputmode="numeric" required>
-            </div>
-
-            <input type="hidden" name="codigo_completo" id="codigo_completo">
-
-            <button type="submit" class="login-btn" id="procesarBtn">
-                <span>VERIFICAR</span>
-                <i class="fa-solid fa-arrow-right"></i>
-            </button>
-        </form>
-
-        <div class="footer-links">
-            <a href="{{ url_for('routes.login') }}" class="back-link">
-                <i class="fa-solid fa-arrow-left"></i> Volver al inicio
-            </a>
-        </div>
+    <div id="flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
     </div>
 
-    <script src="{{ url_for('static', filename='js/recuperarContrasena.js') }}"></script>
+    <main class="main-content">
+        <div class="login-card"> 
+            <div class="logo-container">
+                <img src="http://logiclookcr.com/LogoDCC.webp" alt="Logo Frutas de Altura" class="main-logo">
+            </div>
+
+            <header>
+                <h1>Verificación</h1>
+                <p>Por seguridad, ingresa el código de 6 dígitos enviado a tu correo.</p>
+            </header>
+
+            <form  id="otp-form">
+                <div class="otp-wrapper">
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" required>
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric" required>
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric" required>
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric" required>
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric" required>
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric" required>
+                </div>
+
+                <input type="hidden" id="codigo" name="codigo">
+                
+                <button type="submit" class="login-btn" id="submitBtn">
+                    <span class="btn-text">VERIFICAR CÓDIGO</span>
+                    <i class="fa-solid fa-check-double"></i>
+                    <span class="loader" style="display: none;"><i class="fa-solid fa-spinner fa-spin"></i></span>
+                </button>
+                
+                <div class="footer-links">
+                    <p>¿No recibiste el código?</p>
+                    <a href="#" class="resend-link">Reenviar nuevo código</a>
+                </div>
+            </form>
+        </div>
+    </main>
+    <script src="{{url_for('static', filename='js/popup.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/codeRestablecer.js') }}"></script>
 </body>
 </html>

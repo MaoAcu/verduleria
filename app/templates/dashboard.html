@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Dashboard - Mercado Fresco 🥬</title>
+    <title>Dashboard -  Frutas de Altura 🥬</title>
     
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -27,7 +27,7 @@
         <div class="sidebar" id="sidebar">
             <div class="logo" onclick="window.location.href='index.html'">
                 <h2><i class="fas fa-leaf"></i> Mercado Fresco</h2>
-                <p class="restaurant-subtitle">Productos del Campo</p>
+                <p class="restaurant-subtitle">Frutas de Altura</p>
             </div>
             
             <nav class="sidebar-nav">
@@ -67,7 +67,7 @@
                         <p class="user-role">Verdulería</p>
                     </div>
                 </div>
-                <a href="javascript:void(0)" id="logoutBtn" class="btn-logout">
+                <a href="{{ url_for('auth.logout') }}" id="logoutBtn" class="btn-logout">
                     <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
                 </a>
             </div>
@@ -358,12 +358,12 @@
                         <textarea id="itemDescription" rows="2" placeholder="Descripción"></textarea>
                     </div>
                     
+                 
                     <div class="form-row">
                         <div class="form-group col-md-4">
                             <label>Precio <span class="required">*</span></label>
                             <div class="price-input">
-                                <span class="currency">₡</span>
-                                <input type="number" id="itemPrice" step="10" min="0" required placeholder="0">
+                                <input type="number" id="itemPrice" step="10" min="0" required placeholder="₡ 0">
                             </div>
                         </div>
                         
@@ -375,6 +375,14 @@
                         <div class="form-group col-md-4">
                             <label>Peso</label>
                             <input type="text" id="itemWeight" placeholder="1 kg">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label>
+                                <input type="checkbox" id="priceByUnit"> Precio por unidad 
+                            </label>
                         </div>
                     </div>
                     
@@ -435,6 +443,7 @@
                 <h3>Actualizar Stock</h3>
                 <span class="close-modal" onclick="closeStockModal()">&times;</span>
             </div>
+            <input type="hidden" id="stockItemType" value="producto">
             <div class="modal-body">
                 <form id="stockForm" onsubmit="updateStock(event)">
                     <input type="hidden" id="stockProductId">

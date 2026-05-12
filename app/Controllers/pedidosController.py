@@ -45,7 +45,7 @@ def recibirPedido():
         # Usar el total del frontend o el calculado
         totalFinal = data.get('total', totalReal)
         
-        # Crear nuevo pedido
+        # Crea  nuevo pedido
         nuevoPedido = Mensaje(
             idlocal=ID_LOCAL,
             productos=json.dumps(productosParaGuardar),
@@ -56,7 +56,7 @@ def recibirPedido():
         
         db.session.add(nuevoPedido)
         db.session.commit()
-        print(f"estamos aqui {nuevoPedido}")
+         
         return jsonify({
             'success': True,
             'message': 'Pedido recibido correctamente. Espera confirmación del administrador.',

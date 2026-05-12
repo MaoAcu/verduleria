@@ -278,19 +278,30 @@ async function confirmarPedido(mensajeId) {
         const data = await response.json();
         
         if (data.success) {
+            // Recargar productos para actualizar stock en tiempo real
+            await loadProducts();
+            await loadComplements();
+            
+            // Actualizar estadísticas
+            updateDashboardStats();
+            updateStockTable();
+            checkLowStock();
+            
+            // Si la sección de productos está visible, refrescarla
+            const productosSection = document.getElementById('productosSection');
+            if (productosSection && productosSection.style.display === 'block') {
+                renderProducts(currentCategory);
+            }
+            
+            // Recargar mensajes
+            await cargarMensajes();
+            
             await showAlertModal({
                 title: 'Éxito',
                 message: 'Pedido confirmado y stock actualizado correctamente',
                 type: 'success'
             });
-            await cargarMensajes();
-            if (typeof cargarProductos === 'function') {
-                await cargarProductos();
-            }
-            if (typeof currentSection !== 'undefined' && currentSection === 'estadisticas') {
-                if (typeof cargarEstadisticas === 'function') cargarEstadisticas();
-                if (typeof cargarStockTable === 'function') cargarStockTable();
-            }
+            
         } else {
             await showAlertModal({
                 title: 'Error',

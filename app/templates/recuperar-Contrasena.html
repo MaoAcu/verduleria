@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recuperar Contraseña | Del Campo a tu Casa</title>
+    <title>Recuperar Contraseña | Frutas de Altura</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/recuperarContraStyle.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -12,7 +12,7 @@
 <body>
     <div class="login-card"> 
         <div class="logo-container">
-            <img src="{{ url_for('static', filename='images/logo_verduleria.webp') }}" alt="Logo Del Campo a tu Casa" class="main-logo">
+            <img src="{{ url_for('static', filename='images/LogoDCC.webp') }}" alt="Logo" class="main-logo">
         </div>
 
         <header>
@@ -48,9 +48,9 @@
         </div>
     </div>
 
-    <script>
-        const PREGUNTAS_URL = "{{ url_for('routes.codigo_restablecer') }}";
-    </script>
+   <script>
+      const URL_VERIFICAR_CODE="{{ url_for('routes.codigo_restablecer') }}"
+   </script>
     <script src="{{ url_for('static', filename='js/recuperarContrasena.js') }}"></script>
 </body>
 </html>

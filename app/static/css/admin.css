@@ -1792,7 +1792,7 @@
 }
 
 /*modals*/
-/* Modal de confirmación personalizado */
+/* Modal de confirmación   */
 .modal-confirm {
     display: none;
     position: fixed;
@@ -1925,7 +1925,7 @@
     background: #c82333;
 }
 
-/* Modal de alerta simple */
+/* Modal de alerta   */
 .modal-alert {
     display: none;
     position: fixed;
@@ -2045,4 +2045,134 @@
         transform: translateY(0);
         opacity: 1;
     }
+}
+
+/* ========== CORRECCIÓN: Limitar estilos SOLO a la sección de estadísticas ========== */
+
+/* Stats Grid - SOLO para estadísticas */
+#estadisticasSection .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+#estadisticasSection .stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: 12px;
+    box-shadow: var(--sombra);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+#estadisticasSection .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-hover);
+    border-color: var(--verde-claro);
+}
+
+#estadisticasSection .stat-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 8px;
+    background: var(--verde-fondo);
+    color: var(--verde-principal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+#estadisticasSection .stat-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 2px;
+    color: #333;
+}
+
+#estadisticasSection .stat-info p {
+    color: #666;
+    font-size: 0.7rem;
+}
+
+/* Stock Table - SOLO para estadísticas */
+#estadisticasSection .stock-table-container {
+    background: white;
+    border-radius: 10px;
+    padding: 12px;
+    box-shadow: var(--sombra);
+    overflow-x: auto;
+}
+
+#estadisticasSection .stock-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    min-width: 500px;
+}
+
+#estadisticasSection .stock-table th {
+    background: #f8f9fa;
+    padding: 8px;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #dee2e6;
+    font-size: 0.8rem;
+}
+
+#estadisticasSection .stock-table td {
+    padding: 8px;
+    border-bottom: 1px solid #dee2e6;
+    font-size: 0.8rem;
+}
+
+#estadisticasSection .stock-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+#estadisticasSection .stock-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+#estadisticasSection .stock-badge.normal {
+    background: #d4edda;
+    color: #155724;
+}
+
+#estadisticasSection .stock-badge.bajo {
+    background: #fff3cd;
+    color: #856404;
+}
+
+#estadisticasSection .stock-badge.critico {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+#estadisticasSection .btn-stock {
+    background: none;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    padding: 4px 8px;
+    cursor: pointer;
+    color: #666;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+}
+
+#estadisticasSection .btn-stock:hover {
+    background: var(--verde-principal);
+    color: white;
+    border-color: var(--verde-principal);
 }

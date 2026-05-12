@@ -3,10 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const usuarioInput = document.getElementById('usuario'); 
     const emailError = document.getElementById('emailError'); 
     
-    // El tipo siempre será '1' (Contraseña) ya que eliminamos el selector
-    const TIPO_RECUPERACION = '1';
-
-    localStorage.removeItem('tipoUsuario');
+    // Eliminado TIPO_RECUPERACION y localStorage.removeItem
 
     // Manejar el clic del botón
     procesarBtn.addEventListener('click', function() {
@@ -23,8 +20,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Estilo de carga (Loading elegante)
-        procesarBtn.innerHTML = '⏳ VALIDANDO...';
+        // Estilo de carga
+        procesarBtn.innerHTML = '⏳ ENVIANDO CÓDIGO...';
         procesarBtn.disabled = true;
         procesarBtn.style.opacity = "0.7";
         emailError.innerHTML = ''; 
@@ -35,16 +32,17 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'same-origin',
             body: JSON.stringify({
-                usuario: usuario,
-                tipo: TIPO_RECUPERACION // Enviamos '1' por defecto
+                usuario: usuario
+                // Eliminado 'tipo'
             })
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                localStorage.setItem('tipoUsuario', data.tipo);
-                window.location.href = PREGUNTAS_URL;
+                 
+                window.location.href = URL_VERIFICAR_CODE; 
             } else {
                 emailError.innerHTML = `<div class="error-text">❌ ${data.message}</div>`;
                 resetButton();
@@ -52,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Error:', error);
-            emailError.innerHTML = '<div class="error-text">❌ Error de conexión</div>';
+            emailError.innerHTML = '<div class="error-text">❌ Error de conexión con el servidor</div>';
             resetButton();
         });
     });
@@ -63,9 +61,9 @@ document.addEventListener('DOMContentLoaded', function() {
         return emailRegex.test(email);
     }
 
-    // Función para resetear botón al estilo TITA
+    // Función para resetear botón
     function resetButton() {
-        procesarBtn.innerHTML = 'CONTINUAR';
+        procesarBtn.innerHTML = 'ENVIAR CÓDIGO';
         procesarBtn.disabled = false;
         procesarBtn.style.opacity = "1";
     }
