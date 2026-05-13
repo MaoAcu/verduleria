@@ -4,6 +4,7 @@ from app.models.productos import Productos
 from app.models.complementos import Complementos
 import uuid
 import os
+import json 
 from PIL import Image   
  
 
@@ -211,9 +212,14 @@ def GetComplements():
             "precio": float(c.precio),
             "imagen_url": c.imagen_url,
             "stock": c.stock or 0,
-            "idlocal": c.idlocal
+            "idlocal": c.idlocal,
+            "descripcion": c.descripcion,
+            "popular": c.popular or False,   
+            "estado": "active" if c.estado == 1 else "inactive",  
+             
+            
         } for c in complementos]
-        
+        print (data)
         return jsonify(data), 200
     except Exception as e:
         print(f"[ERROR getComplements]: {e}")
@@ -237,7 +243,10 @@ def CreateComplemento():
             precio=float(data.get('precio')),
             imagen_url=imagen,
             stock=int(data.get('stock', 0)),
-            idlocal=4
+            idlocal=4,
+            descripcion=data.get('descripcion', ''),
+            popular=data.get('popular') == '1', 
+            estado=1 if data.get('estado', 'active') == 'active' else 0,
         )
         
         db.session.add(complemento)
@@ -267,10 +276,16 @@ def UpdateComplemento(idcomplemento):
         # Actualizar campos
         if data.get('nombre'):
             complemento.nombre = data.get('nombre')
+        if data.get('descripcion') is not None:  # ← AGREGAR
+            complemento.descripcion = data.get('descripcion')
         if data.get('precio'):
             complemento.precio = float(data.get('precio'))
         if data.get('stock') is not None:
             complemento.stock = int(data.get('stock'))
+        if data.get('popular') is not None:  # ← AGREGAR
+            complemento.popular = data.get('popular') == '1'
+        if data.get('estado') is not None:  # ← AGREGAR
+            complemento.estado = 1 if data.get('estado') == 'active' else 0
         
         db.session.commit()
         return jsonify({"message": "Complemento actualizado correctamente"}), 200
@@ -278,7 +293,6 @@ def UpdateComplemento(idcomplemento):
         db.session.rollback()
         print(f"[ERROR updateComplemento]: {e}")
         return jsonify({"error": str(e)}), 500
-
 @productos_bp.route("/deleteComplemento/<int:idcomplemento>", methods=["DELETE"])
 def DeleteComplemento(idcomplemento):
     try:
@@ -294,8 +308,7 @@ def DeleteComplemento(idcomplemento):
         db.session.rollback()
         print(f"[ERROR deleteComplemento]: {e}")
         return jsonify({"error": str(e)}), 500
-
-# ==================== STOCK ====================
+ 
 
 @productos_bp.route("/updateStock", methods=["PATCH"])
 def UpdateStock():
@@ -303,29 +316,64 @@ def UpdateStock():
         data = request.get_json()
         items = data.get('items', [])
         
-        for item in items:
-            # Buscar en productos
-            producto = Productos.query.filter_by(id=item['id'], idlocal=4).first()
-            
-            if producto:
-                if 'addToCurrent' in item and item['addToCurrent']:
-                    producto.stock += item['stock']
-                else:
-                    producto.stock = item['stock']
-            else:
-                # Buscar en complementos
-                complemento = Complementos.query.filter_by(id=item['id'], idlocal=4).first()
-                if complemento:
-                    if 'addToCurrent' in item and item['addToCurrent']:
-                        complemento.stock += item['stock']
-                    else:
-                        complemento.stock = item['stock']
-                else:
-                    return jsonify({"error": f"Item con ID {item['id']} no encontrado"}), 404
+        print("=" * 50)
+        print("UPDATE STOCK - Datos recibidos:")
+        print(json.dumps(data, indent=2))
+        print("=" * 50)
         
-        db.session.commit()
+        for item in items:
+            item_id = item['id']
+            nuevo_stock = item['stock']
+            add_to_current = item.get('addToCurrent', False)
+            tipo = item.get('tipo', 'producto')
+            
+            print(f"\nProcesando item:")
+            print(f"  ID: {item_id}")
+            print(f"  Stock: {nuevo_stock}")
+            print(f"  Add to current: {add_to_current}")
+            print(f"  Tipo: {tipo}")
+            
+            if tipo == 'complemento':
+                complemento = Complementos.query.filter_by(id=item_id, idlocal=4).first()
+                if complemento:
+                    print(f"  ✅ Complemento encontrado: {complemento.nombre}")
+                    print(f"  Stock actual: {complemento.stock}")
+                    
+                    if add_to_current:
+                        complemento.stock += nuevo_stock
+                        print(f"  Sumando: {complemento.stock} = {complemento.stock - nuevo_stock} + {nuevo_stock}")
+                    else:
+                        complemento.stock = nuevo_stock
+                        print(f"  Reemplazando: {complemento.stock}")
+                    
+                    db.session.commit()
+                    print(f"  ✅ Stock actualizado a: {complemento.stock}")
+                else:
+                    print(f"  ❌ Complemento con ID {item_id} NO encontrado en idlocal=4")
+                    # Buscar sin filtro de idlocal
+                    complemento_sin_filtro = Complementos.query.filter_by(id=item_id).first()
+                    if complemento_sin_filtro:
+                        print(f"  ⚠️  Pero se encontró sin filtro: {complemento_sin_filtro.nombre}, idlocal={complemento_sin_filtro.idlocal}")
+                    return jsonify({"error": f"Complemento con ID {item_id} no encontrado"}), 404
+                    
+            elif tipo == 'producto':
+                producto = Productos.query.filter_by(id=item_id, idlocal=4).first()
+                if producto:
+                    print(f"  ✅ Producto encontrado: {producto.nombre}")
+                    if add_to_current:
+                        producto.stock += nuevo_stock
+                    else:
+                        producto.stock = nuevo_stock
+                    db.session.commit()
+                else:
+                    return jsonify({"error": f"Producto con ID {item_id} no encontrado"}), 404
+        
+        print("\n✅ Stock actualizado correctamente")
         return jsonify({"message": "Stock actualizado correctamente"}), 200
+        
     except Exception as e:
         db.session.rollback()
-        print(f"[ERROR updateStock]: {e}")
+        print(f"\n❌ ERROR: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({"error": str(e)}), 500

@@ -51,7 +51,7 @@ def Login():
 @routes_bp.route("/recuperar_Contra", endpoint="recuperar_Contra")
 def RecuperarContrasena():
     return render_template("recuperar-Contrasena.html")
-
+#
 @routes_bp.route("/Codigo", endpoint="Codigo")
 @loginRequired
 @noCache

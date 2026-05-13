@@ -96,9 +96,10 @@ async function loadComplements() {
         // Si hay datos del backend, úsalos; si no, usa los de respaldo
         if (data && data.length > 0) {
             complements = data.map(item => ({
+                id: item.id,
                 name: item.nombre,
                 price: item.precio,
-                img: item.imagen_url || IMG_URL + 'complement-default.webp'
+                img: item.imagen_url || URL_IMG_BASE  
             }));
         } else {
             // Datos de respaldo en caso de que no haya complementos en la BD
@@ -273,12 +274,17 @@ function renderComplementsInCart() {
     }
     
     complements.forEach(c => {
+        // Escapar comillas simples en el nombre para evitar errores
+        const escapedName = c.name.replace(/'/g, "\\'");
+        
         carousel.innerHTML += `
             <div class="complement-card">
                 <img src="${c.img}" onerror="this.src='${URL_IMG_DEFAULT}'" alt="${c.name}">
                 <p>${c.name}</p>
                 <span style="font-size:0.7rem;">₡${c.price}</span>
-                <button class="add-complement" onclick="addComplement('${c.name}', ${c.price}, '${c.img}')">+</button>
+                <button class="add-complement" onclick="addComplement(${c.id}, '${escapedName}', ${c.price}, '${c.img}')">
+                    +
+                </button>
             </div>
         `;
     });
@@ -405,9 +411,9 @@ window.closeCartModal = function() {
 };
 
 // Añadir complemento
-window.addComplement = function(name, price, img) {
+window.addComplement = function(id,name, price, img) {
     cart.push({ 
-        id: Date.now(), 
+        id: id, 
         name: name, 
         price: price, 
         qty: 1,
@@ -591,9 +597,87 @@ window.setService = function(type, btn) {
     document.querySelectorAll('.service-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
 };
+function agregarComplementoAlCarrito(complemento) {
+    cart.push({
+        id: complemento.id,
+        name: complemento.nombre,
+        price: complemento.precio,
+        qty: 1,
+        type: 'complemento',   
+        isComplement: true, 
+        comment: null
+    });
+}
+
+async function verificarStockDisponible(allItems) {
+    console.log('=== VERIFICANDO STOCK ===');
+    console.log('Items a verificar:', allItems);
+    
+    // Agrupar items por tipo
+    const productosIds = [];
+    const complementosIds = [];
+    
+    for (const item of allItems) {
+        const tipo = item.type || (item.isComplement ? 'complemento' : 'producto');
+        console.log(`Item: ${item.name}, Tipo: ${tipo}, Cantidad: ${item.qty || 1}, ID: ${item.id}`);
+        
+        if (tipo === 'producto') {
+            productosIds.push({ id: item.id, cantidad: item.qty || 1, nombre: item.name });
+        } else {
+            complementosIds.push({ id: item.id, cantidad: item.qty || 1, nombre: item.name });
+        }
+    }
+    
+    // Verificar stock de productos
+    if (productosIds.length > 0) {
+        console.log('Verificando productos:', productosIds);
+        
+        const response = await fetch('/pedidos/verificar-stock', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ items: productosIds, tipo: 'producto' })
+        });
+        
+        const result = await response.json();
+        console.log('Respuesta verificación productos:', result);
+        
+        if (!result.success) {
+            console.log('  Error en productos:', result.error);
+            return { success: false, error: result.error };
+        }
+    }
+    
+    // Verificar stock de complementos
+    if (complementosIds.length > 0) {
+        console.log('Verificando complementos:', complementosIds);
+        
+        const response = await fetch('/pedidos/verificar-stock', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ items: complementosIds, tipo: 'complemento' })
+        });
+        
+        const result = await response.json();
+        console.log('Respuesta verificación complementos:', result);
+        
+        if (!result.success) {
+            console.log('  Error en complementos:', result.error);
+            return { success: false, error: result.error };
+        }
+    }
+    
+    console.log('✅ Stock verificado correctamente');
+    return { success: true };
+}
 
 window.sendOrder = async function() {
-    if (cart.length === 0) {
+    // Combinar productos y complementos del carrito
+    const allItems = [...cart];
+    if (typeof complementsCart !== 'undefined' && complementsCart.length > 0) {
+        allItems.push(...complementsCart);
+    }
+    
+    if (allItems.length === 0) {
         showNotification('🛒 Carrito vacío');
         return;
     }
@@ -602,19 +686,29 @@ window.sendOrder = async function() {
     showGlobalLoader(true);
     
     try {
+        // ✅ PASO 1: Verificar stock disponible ANTES de enviar
+        const stockCheck = await verificarStockDisponible(allItems);
+        
+        if (!stockCheck.success) {
+            showNotification(`❌ ${stockCheck.error}`, 'error');
+            showGlobalLoader(false);
+            return;
+        }
+        
         // Calcular total
         let total = 0;
-        cart.forEach(item => {
+        allItems.forEach(item => {
             total += item.price * (item.qty || 1);
         });
         
         // Preparar datos para el backend
         const pedidoData = {
-            productos: cart.map(item => ({
+            productos: allItems.map(item => ({
                 id: item.id,
                 nombre: item.name,
                 cantidad: item.qty || 1,
                 precio: item.price,
+                tipo: item.type || (item.isComplement ? 'complemento' : 'producto'),
                 comentario: item.comment || null
             })),
             servicio: selectedService,
@@ -635,16 +729,34 @@ window.sendOrder = async function() {
         // Preparar mensaje de WhatsApp
         let message = "🍃 *Frutas de Altura* 🍃\n\n";
         
-        cart.forEach(item => {
-            const itemTotal = item.price * (item.qty || 1);
-            message += `• ${item.name} x${item.qty || 1} - ₡${itemTotal.toLocaleString()}\n`;
-            
-            if (item.comment) {
-                message += `  _Nota: ${item.comment}_\n`;
-            }
-        });
+        const productos = allItems.filter(item => (item.type === 'producto' || (!item.type && !item.isComplement)));
+        const complementos = allItems.filter(item => (item.type === 'complemento' || item.isComplement === true));
         
-        message += `\n📦 *Servicio:* ${selectedService}\n`;
+        if (productos.length > 0) {
+            message += "📦 *PRODUCTOS:*\n";
+            productos.forEach(item => {
+                const itemTotal = item.price * (item.qty || 1);
+                message += `• ${item.name} x${item.qty || 1} - ₡${itemTotal.toLocaleString()}\n`;
+                if (item.comment) {
+                    message += `  _Nota: ${item.comment}_\n`;
+                }
+            });
+            message += "\n";
+        }
+        
+        if (complementos.length > 0) {
+            message += "➕ *COMPLEMENTOS:*\n";
+            complementos.forEach(item => {
+                const itemTotal = item.price * (item.qty || 1);
+                message += `• ${item.name} x${item.qty || 1} - ₡${itemTotal.toLocaleString()}\n`;
+                if (item.comment) {
+                    message += `  _Nota: ${item.comment}_\n`;
+                }
+            });
+            message += "\n";
+        }
+        
+        message += `📦 *Servicio:* ${selectedService}\n`;
         message += `💰 *Total:* ₡${total.toLocaleString()}`;
         
         // Abrir WhatsApp
@@ -653,11 +765,16 @@ window.sendOrder = async function() {
         
         // Limpiar carrito
         clearCartAfterOrder();
+        if (typeof clearComplementsCart === 'function') {
+            clearComplementsCart();
+        }
         
-        //  Recarga productos para actualizar stock
+        // Recargar productos para actualizar stock
         await loadProducts();
+        if (typeof loadComplements === 'function') {
+            await loadComplements();
+        }
         
-        // Mostrar mensaje de éxito
         if (result.success) {
             showNotification('✅ Pedido enviado correctamente');
         } else {
@@ -671,27 +788,50 @@ window.sendOrder = async function() {
         let message = "🍃 *Del Campo a su Casa* 🍃\n\n";
         let total = 0;
         
-        cart.forEach(item => {
-            const itemTotal = item.price * (item.qty || 1);
-            total += itemTotal;
-            message += `• ${item.name} x${item.qty || 1} - ₡${itemTotal.toLocaleString()}\n`;
-            
-            if (item.comment) {
-                message += `  _Nota: ${item.comment}_\n`;
-            }
-        });
+        const productos = allItems.filter(item => (item.type === 'producto' || (!item.type && !item.isComplement)));
+        const complementos = allItems.filter(item => (item.type === 'complemento' || item.isComplement === true));
         
-        message += `\n📦 *Servicio:* ${selectedService}\n`;
+        if (productos.length > 0) {
+            message += "📦 *PRODUCTOS:*\n";
+            productos.forEach(item => {
+                const itemTotal = item.price * (item.qty || 1);
+                total += itemTotal;
+                message += `• ${item.name} x${item.qty || 1} - ₡${itemTotal.toLocaleString()}\n`;
+                if (item.comment) {
+                    message += `  _Nota: ${item.comment}_\n`;
+                }
+            });
+            message += "\n";
+        }
+        
+        if (complementos.length > 0) {
+            message += "➕ *COMPLEMENTOS:*\n";
+            complementos.forEach(item => {
+                const itemTotal = item.price * (item.qty || 1);
+                total += itemTotal;
+                message += `• ${item.name} x${item.qty || 1} - ₡${itemTotal.toLocaleString()}\n`;
+                if (item.comment) {
+                    message += `  _Nota: ${item.comment}_\n`;
+                }
+            });
+            message += "\n";
+        }
+        
+        message += `📦 *Servicio:* ${selectedService}\n`;
         message += `💰 *Total:* ₡${total.toLocaleString()}`;
         
         const whatsappNumber = '50687922758';
         window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
         
-        // Limpiar carrito incluso en error
         clearCartAfterOrder();
+        if (typeof clearComplementsCart === 'function') {
+            clearComplementsCart();
+        }
         
-        //  También recarga productos en caso de error
         await loadProducts();
+        if (typeof loadComplements === 'function') {
+            await loadComplements();
+        }
         
         showNotification('Pedido enviado por WhatsApp');
         
@@ -699,7 +839,6 @@ window.sendOrder = async function() {
         showGlobalLoader(false);
     }
 };
- 
 
 function actualizarStockMultiple(items) {
     fetch('/producto/updateStock', {

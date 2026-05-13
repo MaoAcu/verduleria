@@ -13,7 +13,7 @@ from app.Controllers.productosController import productos_bp
 from app.Controllers.credentialController import credential_bp
 from app.Controllers.MensajeriaController import mensajes_bp
 from app.Controllers.pedidosController import pedidos_bp
-from app.models import Usuario, Login, Local,Productos,Complementos
+from app.models import Usuario, Login, Local, Productos, Complementos
  
 load_dotenv() 
 class PrefixMiddleware(object):
@@ -41,11 +41,11 @@ def create_app():
     email_service.init_app(app) 
     
     # Seguridad de cookies
-    #  SEGURIDAD DE COOKIES 
+ 
     app.config.update(
         SESSION_COOKIE_NAME="session_verdureria",  
         SESSION_COOKIE_PATH="/verdureria",         
-        SESSION_COOKIE_SECURE=False,        
+        SESSION_COOKIE_SECURE=True,        
         SESSION_COOKIE_SAMESITE="Lax",
         SESSION_COOKIE_HTTPONLY=True,              
         PERMANENT_SESSION_LIFETIME=1800        

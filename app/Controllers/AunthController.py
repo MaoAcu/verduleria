@@ -37,9 +37,8 @@ def login():
                 flash("Usuario o contraseña incorrectos")
 
             return redirect(url_for("auth.login"))
-
-        # ---- LOGIN CORRECTO ----
-        login.registrar_login_exitoso()
+ 
+     
         db.session.commit()
 
         session.clear()

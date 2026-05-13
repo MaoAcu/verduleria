@@ -24,6 +24,8 @@ function normalizeText(str) {
         .replace(/[^\w\s]/g, '');
 }
 
+ 
+
 function showLoader() {
     const loader = document.getElementById('loader');
     if (loader) loader.style.display = 'flex';
@@ -323,9 +325,14 @@ function renderProducts(category = null) {
     if (!section) return;
     
     let filteredProducts = products;
+    
+    // Filtrar solo productos ACTIVOS
+    filteredProducts = filteredProducts.filter(p => p.estado === 'active');
+    
+    // Filtrar por categoría
     if (category && category !== 'all') {
         const categoryNorm = normalizeText(category);
-        filteredProducts = products.filter(p => {
+        filteredProducts = filteredProducts.filter(p => {
             if (!p.category) return false;
             return normalizeText(p.category) === categoryNorm;
         });
@@ -341,7 +348,7 @@ function renderProducts(category = null) {
             </div>
             <div class="empty-state">
                 <i class="fas fa-box-open"></i>
-                <p>No hay productos</p>
+                <p>No hay productos activos</p>
             </div>
         `;
         return;
@@ -358,7 +365,7 @@ function renderProducts(category = null) {
             ${filteredProducts.map(p => {
                 const name = p.name.replace(/'/g, "\\'");
                 return `
-                    <div class="product-card ${p.estado === 'inactive' ? 'product-inactive' : ''}">
+                    <div class="product-card">
                         <div class="product-image">
                             <img src="${p.img}" alt="${p.name}" onerror="this.src='${URL_IMG_DEFAULT}'">
                             ${p.featured ? '<span class="product-badge">🌟</span>' : ''}
@@ -851,17 +858,18 @@ function toggleComplementPopular() {
 async function saveComplement(e) {
     e.preventDefault();
     
-    const formData = new FormData();
+     const formData = new FormData();
     const id = document.getElementById('complementId')?.value || '';
     
     formData.append('nombre', document.getElementById('complementName')?.value || '');
     formData.append('descripcion', document.getElementById('complementDescription')?.value || '');
     formData.append('precio', document.getElementById('complementPrice')?.value || '0');
     formData.append('stock', document.getElementById('complementStock')?.value || '0');
+    formData.append('popular', document.getElementById('complementIsPopular')?.value || '0');  // ← AGREGAR
+    formData.append('estado', document.getElementById('complementStatus')?.value || 'active');  // ← AGREGAR
     
     const fileInput = document.getElementById('complementImageFile');
     if (fileInput && fileInput.files[0]) formData.append('image', fileInput.files[0]);
-    
     try {
         showLoader();
         
@@ -895,21 +903,24 @@ function closeComplementItemModal() {
 }
 
 // ==================== STOCK ====================
-function openStockModal(id, name, stock) {
+function openStockModal(id, name, stock, tipo = 'producto') {
     const idInput = document.getElementById('stockProductId');
     const nameSpan = document.getElementById('stockProductName');
     const stockInput = document.getElementById('newStock');
     const addCheck = document.getElementById('addToCurrent');
+    const tipoInput = document.getElementById('stockItemType');  // ← Agregar esta línea
     
     if (idInput) idInput.value = id;
     if (nameSpan) nameSpan.textContent = name;
     if (stockInput) stockInput.value = stock || 0;
     if (addCheck) addCheck.checked = false;
+    if (tipoInput) tipoInput.value = tipo;  // ← Agregar esta línea
+    
+    console.log('Stock Modal - ID:', id, 'Nombre:', name, 'Tipo:', tipo); // Debug
     
     const modal = document.getElementById('stockModal');
     if (modal) modal.style.display = 'flex';
 }
-
 function closeStockModal() {
     const modal = document.getElementById('stockModal');
     if (modal) modal.style.display = 'none';
@@ -921,6 +932,9 @@ async function updateStock(e) {
     const id = document.getElementById('stockProductId')?.value;
     const stock = parseInt(document.getElementById('newStock')?.value || '0');
     const add = document.getElementById('addToCurrent')?.checked || false;
+    const tipo = document.getElementById('stockItemType')?.value || 'producto'; // ← Leer tipo
+    
+    console.log('UpdateStock - Tipo enviado:', tipo); // Debug
     
     try {
         showLoader();
@@ -929,19 +943,31 @@ async function updateStock(e) {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
-                items: [{ id: parseInt(id), stock: stock, addToCurrent: add }] 
+                items: [{ 
+                    id: parseInt(id), 
+                    stock: stock, 
+                    addToCurrent: add,
+                    tipo: tipo  // ← Enviar tipo
+                }] 
             })
         });
         
-        if (!res.ok) throw new Error('Error');
+        const result = await res.json();
         
-        await loadProducts();
-        await loadComplements();
+        if (!res.ok) throw new Error(result.error || 'Error');
+        
+        await loadProducts();      
+        await loadComplements();   
+        
+         
+        updateDashboardStats();   
+        updateStockTable();        
+        checkLowStock(); 
         closeStockModal();
         showInfoModal('Éxito', 'Stock actualizado', 'success');
     } catch (error) {
         console.error('Error:', error);
-        showInfoModal('Error', 'No se pudo actualizar', 'error');
+        showInfoModal('Error', error.message, 'error');
     } finally {
         hideLoader();
     }
@@ -996,7 +1022,7 @@ function closeDeleteModal() {
     if (modal) modal.style.display = 'none';
 }
 
-// ==================== CATEGORÍAS (CRUD) ====================
+ 
 function openAddCategoriaModal() {
     const title = document.getElementById('categoriaModalTitle');
     const id = document.getElementById('categoriaId');
@@ -1093,16 +1119,20 @@ function updateStockTable() {
     const tbody = document.getElementById('stockTableBody');
     if (!tbody) return;
     
+    // Agregar el tipo a cada item
     const items = [
-        ...products.map(p => ({...p, nombre: p.name, categoria: p.category})),
-        ...complements.map(c => ({...c, nombre: c.name, categoria: 'Complemento'}))
+        ...products.map(p => ({...p, nombre: p.name, categoria: p.category, tipo: 'producto'})),
+        ...complements.map(c => ({...c, nombre: c.name, categoria: 'Complemento', tipo: 'complemento'}))
     ].sort((a, b) => (a.stock || 0) - (b.stock || 0));
     
     tbody.innerHTML = items.map(item => {
         const name = item.nombre.replace(/'/g, "\\'");
+        // Agregar un indicador visual para complementos
+        const nombreConIcono = item.tipo === 'complemento' ? `➕ ${item.nombre}` : item.nombre;
+        
         return `
             <tr>
-                <td>${item.nombre}</td>
+                <td>${nombreConIcono}</td>
                 <td>${item.categoria}</td>
                 <td>${item.stock || 0}</td>
                 <td>
@@ -1111,7 +1141,7 @@ function updateStockTable() {
                     </span>
                 </td>
                 <td>
-                    <button class="btn-stock" onclick='openStockModal(${item.id}, "${name}", ${item.stock})'>
+                    <button class="btn-stock" onclick='openStockModal(${item.id}, "${name}", ${item.stock}, "${item.tipo}")'>
                         <i class="fas fa-edit"></i> Actualizar
                     </button>
                 </td>
@@ -1148,7 +1178,7 @@ function saveConfig() {
         showInfoModal('Éxito', 'Configuración guardada', 'success');
     }
 }
-saveProduct
+ 
 // ==================== LOGOUT ====================
 async function logout() {
     try {
